@@ -15,6 +15,7 @@ namespace CannyProject
         public MainForm()
         {
             InitializeComponent();
+            ForLightDevelop();
         }
 
         private void uiOpenImageToolStripLabel_Click(object sender, EventArgs e)
@@ -26,7 +27,6 @@ namespace CannyProject
                               FilterIndex = 5,
                               RestoreDirectory = true
                           };
-
             if (ofd.ShowDialog() == DialogResult.OK)
             {
                 try
@@ -41,9 +41,29 @@ namespace CannyProject
             }
         }
 
+        private void ForLightDevelop()
+        {
+            var imagePath = "D:\\мои документы\\Visual Studio 2012\\Projects\\Diplom ^_^\\canny\\Images\\x_e7da9276.jpg";
+            uiInputImagePictureBox.Image = Image.FromFile(imagePath);
+        }
+
         private void Calculate()
         {
-            uiGaussianFilteredImagePictureBox.Image = Canny.GetGaussianFilteredImmage(uiInputImagePictureBox.Image);
+            var TH = (float)Convert.ToDouble(TxtTH.Text);
+            var TL = (float)Convert.ToDouble(TxtTL.Text);
+
+            var MaskSize = Convert.ToInt32(TxtGMask.Text);
+            var Sigma = (float)Convert.ToDouble(TxtSigma.Text);
+            var CannyData = new Canny((Bitmap)uiInputImagePictureBox.Image, TH, TL, MaskSize, Sigma);
+            uiGaussianFilteredImagePictureBox.Image = CannyData.DisplayImage(CannyData.FilteredImage);
+
+            uiFinalCannyPictureBox.Image = CannyData.DisplayImage(CannyData.EdgeMap);
+
+        }
+
+        private void uiCalcButton_Click(object sender, EventArgs e)
+        {
+            Calculate();
         }
     }
 }
