@@ -111,47 +111,28 @@ namespace CannyProject
 
         private void DetectCannyEdges()
         {
-            Gradient = new float[ObjInputImage.Width, ObjInputImage.Height];
-            NonMax = new float[ObjInputImage.Width, ObjInputImage.Height];
             PostHysteresis = new int[ObjInputImage.Width, ObjInputImage.Height];
 
             GaussianFilterImage = GetGaussianFilterImage(GreyImage);
             float[,] derivativeX = GetDifferentiateX(GaussianFilterImage);
             float[,] derivativeY = GetDifferentiateY(GaussianFilterImage);
+            Gradient = ComputeGradientByDerivativesXY(derivativeX, derivativeY);
+            NonMax = PerformNonMaximumSuppression(Gradient);
 
-            //Compute the gradient magnitude based on derivatives in x and y:
-            ComputeGradientByDerivativesXY(derivativeX, derivativeY);
 
-            // Perform Non maximum suppression:
-            // NonMax = Gradient;
+            int limit = KernelSize / 2;
 
-            for (var i = 0; i <= (ObjInputImage.Width - 1); i++)
+
+            for (var i = limit; i <= (ObjInputImage.Width - limit) - 1; i++)
             {
-                for (var j = 0; j <= (ObjInputImage.Height - 1); j++)
+                for (var j = limit; j <= (ObjInputImage.Height - limit) - 1; j++)
                 {
-                    NonMax[i, j] = Gradient[i, j];
-                }
-            }
-
-            int Limit = KernelSize / 2;
-            int r, c;
-            float Tangent;
-
-
-            for (var i = Limit; i <= (ObjInputImage.Width - Limit) - 1; i++)
-            {
-                for (var j = Limit; j <= (ObjInputImage.Height - Limit) - 1; j++)
-                {
-
-                    if (derivativeX[i, j] == 0)
-                        Tangent = 90F;
-                    else
-                        Tangent = (float)(Math.Atan(derivativeY[i, j] / derivativeX[i, j]) * 180 / Math.PI); //rad to degree
-
+                    float tangent = derivativeX[i, j] == 0 ? 90F
+                                        : (float)(Math.Atan(derivativeY[i, j] / derivativeX[i, j]) * 180 / Math.PI); //сомнительная херня, увеличивает производительность?
 
 
                     //Horizontal Edge
-                    if (((-22.5 < Tangent) && (Tangent <= 22.5)) || ((157.5 < Tangent) && (Tangent <= -157.5)))
+                    if (((-22.5 < tangent) && (tangent <= 22.5)) || ((157.5 < tangent) && (tangent <= -157.5)))
                     {
                         if ((Gradient[i, j] < Gradient[i, j + 1]) || (Gradient[i, j] < Gradient[i, j - 1]))
                             NonMax[i, j] = 0;
@@ -159,21 +140,21 @@ namespace CannyProject
 
 
                     //Vertical Edge
-                    if (((-112.5 < Tangent) && (Tangent <= -67.5)) || ((67.5 < Tangent) && (Tangent <= 112.5)))
+                    if (((-112.5 < tangent) && (tangent <= -67.5)) || ((67.5 < tangent) && (tangent <= 112.5)))
                     {
                         if ((Gradient[i, j] < Gradient[i + 1, j]) || (Gradient[i, j] < Gradient[i - 1, j]))
                             NonMax[i, j] = 0;
                     }
 
                     //+45 Degree Edge
-                    if (((-67.5 < Tangent) && (Tangent <= -22.5)) || ((112.5 < Tangent) && (Tangent <= 157.5)))
+                    if (((-67.5 < tangent) && (tangent <= -22.5)) || ((112.5 < tangent) && (tangent <= 157.5)))
                     {
                         if ((Gradient[i, j] < Gradient[i + 1, j - 1]) || (Gradient[i, j] < Gradient[i - 1, j + 1]))
                             NonMax[i, j] = 0;
                     }
 
                     //-45 Degree Edge
-                    if (((-157.5 < Tangent) && (Tangent <= -112.5)) || ((67.5 < Tangent) && (Tangent <= 22.5)))
+                    if (((-157.5 < tangent) && (tangent <= -112.5)) || ((67.5 < tangent) && (tangent <= 22.5)))
                     {
                         if ((Gradient[i, j] < Gradient[i + 1, j + 1]) || (Gradient[i, j] < Gradient[i - 1, j - 1]))
                             NonMax[i, j] = 0;
@@ -184,9 +165,9 @@ namespace CannyProject
 
 
             //PostHysteresis = NonMax;
-            for (r = Limit; r <= (ObjInputImage.Width - Limit) - 1; r++)
+            for (var r = limit; r <= (ObjInputImage.Width - limit) - 1; r++)
             {
-                for (c = Limit; c <= (ObjInputImage.Height - Limit) - 1; c++)
+                for (var c = limit; c <= (ObjInputImage.Height - limit) - 1; c++)
                 {
 
                     PostHysteresis[r, c] = (int)NonMax[r, c];
@@ -195,11 +176,11 @@ namespace CannyProject
             }
 
             //Find Max and Min in Post Hysterisis
-            float min, max;
-            min = 100;
-            max = 0;
-            for (r = Limit; r <= (ObjInputImage.Width - Limit) - 1; r++)
-                for (c = Limit; c <= (ObjInputImage.Height - Limit) - 1; c++)
+            float min = 100;
+            float max = 0;
+            for (var r = limit; r <= (ObjInputImage.Width - limit) - 1; r++)
+            {
+                for (var c = limit; c <= (ObjInputImage.Height - limit) - 1; c++)
                 {
                     if (PostHysteresis[r, c] > max)
                     {
@@ -211,14 +192,15 @@ namespace CannyProject
                         min = PostHysteresis[r, c];
                     }
                 }
+            }
 
             GNH = new float[ObjInputImage.Width, ObjInputImage.Height];
             GNL = new float[ObjInputImage.Width, ObjInputImage.Height];
             EdgePoints = new int[ObjInputImage.Width, ObjInputImage.Height];
 
-            for (r = Limit; r <= (ObjInputImage.Width - Limit) - 1; r++)
+            for (var r = limit; r <= (ObjInputImage.Width - limit) - 1; r++)
             {
-                for (c = Limit; c <= (ObjInputImage.Height - Limit) - 1; c++)
+                for (var c = limit; c <= (ObjInputImage.Height - limit) - 1; c++)
                 {
                     if (PostHysteresis[r, c] >= MaxHysteresisThresh)
                     {
@@ -245,17 +227,6 @@ namespace CannyProject
                 for (var j = 0; j <= (ObjInputImage.Height - 1); j++)
                 {
                     EdgeMap[i, j] = EdgeMap[i, j]*255;
-                }
-            }
-        }
-
-        private void ComputeGradientByDerivativesXY(float[,] derivativeX, float[,] derivativeY)
-        {
-            for (var i = 0; i <= (ObjInputImage.Width - 1); i++)
-            {
-                for (var j = 0; j <= (ObjInputImage.Height - 1); j++)
-                {
-                    Gradient[i, j] = (float)Math.Sqrt((derivativeX[i, j] * derivativeX[i, j]) + (derivativeY[i, j] * derivativeY[i, j]));
                 }
             }
         }
@@ -395,6 +366,33 @@ namespace CannyProject
                 }
             }
             return output;
+        }
+
+        private float[,] ComputeGradientByDerivativesXY(float[,] derivativeX, float[,] derivativeY)
+        {
+            var gradient = new float[ObjInputImage.Width, ObjInputImage.Height];
+            for (var i = 0; i <= (ObjInputImage.Width - 1); i++)
+            {
+                for (var j = 0; j <= (ObjInputImage.Height - 1); j++)
+                {
+                    gradient[i, j] = (float)Math.Sqrt((derivativeX[i, j] * derivativeX[i, j]) + (derivativeY[i, j] * derivativeY[i, j]));
+                }
+            }
+            return gradient;
+        }
+
+        private float[,] PerformNonMaximumSuppression(float[,] gradient)
+        {
+            // NonMax = Gradient; ?? ^_^
+            var nonMax = new float[ObjInputImage.Width, ObjInputImage.Height];
+            for (var i = 0; i <= (ObjInputImage.Width - 1); i++)
+            {
+                for (var j = 0; j <= (ObjInputImage.Height - 1); j++)
+                {
+                    nonMax[i, j] = gradient[i, j];
+                }
+            }
+            return nonMax;
         }
 
         private void HysterisisThresholding(int[,] Edges)
