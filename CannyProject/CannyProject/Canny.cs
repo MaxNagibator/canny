@@ -242,9 +242,9 @@ namespace CannyProject
                 for (var j = limit; j <= ((ObjInputImage.Height - 1) - limit); j++)
                 {
                     float sum = 0;
-                    for (var k = -limit; k <= limit; k++)
+                    for (var k = -limit; k < limit; k++)
                     {
-                        for (var l = -limit; l <= limit; l++)
+                        for (var l = -limit; l < limit; l++)
                         {
                             sum = sum + ((float)data[i + k, j + l] * gaussianKernel[limit + k, limit + l]);
                         }
@@ -274,9 +274,9 @@ namespace CannyProject
 
             float min = 1000;
 
-            for (var i = -SizeofKernel / 2; i <= SizeofKernel / 2; i++)
+            for (var i = -SizeofKernel / 2; i < SizeofKernel / 2; i++)
             {
-                for (var j = -SizeofKernel / 2; j <= SizeofKernel / 2; j++)
+                for (var j = -SizeofKernel / 2; j < SizeofKernel / 2; j++)
                 {
                     Kernel[SizeofKernel / 2 + i, SizeofKernel / 2 + j] = ((1 / D1) * (float)Math.Exp(-(i * i + j * j) / D2));
                     if (Kernel[SizeofKernel / 2 + i, SizeofKernel / 2 + j] < min)
@@ -289,9 +289,9 @@ namespace CannyProject
             if ((min > 0) && (min < 1))
             {
 
-                for (var i = -SizeofKernel / 2; i <= SizeofKernel / 2; i++)
+                for (var i = -SizeofKernel / 2; i < SizeofKernel / 2; i++)
                 {
-                    for (var j = -SizeofKernel / 2; j <= SizeofKernel / 2; j++)
+                    for (var j = -SizeofKernel / 2; j < SizeofKernel / 2; j++)
                     {
                         Kernel[SizeofKernel / 2 + i, SizeofKernel / 2 + j] = (float)Math.Round(Kernel[SizeofKernel / 2 + i, SizeofKernel / 2 + j] * mult, 0);
                         gaussianKernel[SizeofKernel / 2 + i, SizeofKernel / 2 + j] = (int)Kernel[SizeofKernel / 2 + i, SizeofKernel / 2 + j];
@@ -304,9 +304,9 @@ namespace CannyProject
             else
             {
                 sum = 0;
-                for (var i = -SizeofKernel / 2; i <= SizeofKernel / 2; i++)
+                for (var i = -SizeofKernel / 2; i < SizeofKernel / 2; i++)
                 {
-                    for (var j = -SizeofKernel / 2; j <= SizeofKernel / 2; j++)
+                    for (var j = -SizeofKernel / 2; j < SizeofKernel / 2; j++)
                     {
                         Kernel[SizeofKernel / 2 + i, SizeofKernel / 2 + j] = (float)Math.Round(Kernel[SizeofKernel / 2 + i, SizeofKernel / 2 + j], 0);
                         gaussianKernel[SizeofKernel / 2 + i, SizeofKernel / 2 + j] = (int)Kernel[SizeofKernel / 2 + i, SizeofKernel / 2 + j];
