@@ -6,11 +6,10 @@ namespace CannyProject
 {
     public class Canny
     {
-        public int Width, Height;
-        public Bitmap Obj;
+        public Bitmap ObjInputImage;
         public int[,] GreyImage;
+
         //Gaussian Kernel Data
-        int[,] GaussianKernel;
         int KernelWeight;
         int KernelSize = 5;
         float Sigma = 1;   // for N=2 Sigma =0.85  N=5 Sigma =1, N=9 Sigma = 2    2*Sigma = (int)N/2
@@ -28,93 +27,63 @@ namespace CannyProject
         public int[,] EdgeMap;
         public int[,] VisitedMap;
 
-        public Canny(Bitmap Input)
+        public Canny(Bitmap inputImage)
         {
-            // Gaussian and Canny Parameters
-            MaxHysteresisThresh = 20F;
-            MinHysteresisThresh = 10F;
-            Obj = Input;
-            Width = Obj.Width;
-            Height = Obj.Height;
-            EdgeMap = new int[Width, Height];
-            VisitedMap = new int[Width, Height];
-
-            ReadImage();
-            DetectCannyEdges();
-            return;
+            const float maxHysteresisThresh = 20F;
+            const float minHysteresisThresh = 10F;
+            SetGaussianAndCannyParameters(inputImage, maxHysteresisThresh, minHysteresisThresh);
         }
 
-        public Canny(Bitmap Input, float Th, float Tl)
+        public Canny(Bitmap inputImage, float maxHysteresisThresh, float minHysteresisThresh)
         {
-
-            // Gaussian and Canny Parameters
-
-            MaxHysteresisThresh = Th;
-            MinHysteresisThresh = Tl;
-
-            Obj = Input;
-            Width = Obj.Width;
-            Height = Obj.Height;
-
-            EdgeMap = new int[Width, Height];
-            VisitedMap = new int[Width, Height];
-
-            ReadImage();
-            DetectCannyEdges();
-            return;
+            SetGaussianAndCannyParameters(inputImage, maxHysteresisThresh, minHysteresisThresh);
         }
 
-        public Canny(Bitmap Input, float Th, float Tl, int GaussianMaskSize, float SigmaforGaussianKernel)
+        public Canny(Bitmap inputImage, float maxHysteresisThresh, float minHysteresisThresh, int gaussianMaskSize, float sigmaforGaussianKernel)
         {
+            KernelSize = gaussianMaskSize;
+            Sigma = sigmaforGaussianKernel;
+            SetGaussianAndCannyParameters(inputImage, maxHysteresisThresh, minHysteresisThresh);
+        }
 
-            // Gaussian and Canny Parameters
-
-            MaxHysteresisThresh = Th;
-            MinHysteresisThresh = Tl;
-            KernelSize = GaussianMaskSize;
-            Sigma = SigmaforGaussianKernel;
-            Obj = Input;
-            Width = Obj.Width;
-            Height = Obj.Height;
-
-            EdgeMap = new int[Width, Height];
-            VisitedMap = new int[Width, Height];
-
+        private void SetGaussianAndCannyParameters(Bitmap inputImage, float maxHysteresisThresh, float minHysteresisThresh)
+        {
+            MaxHysteresisThresh = maxHysteresisThresh;
+            MinHysteresisThresh = minHysteresisThresh;
+            ObjInputImage = inputImage;
+            EdgeMap = new int[ObjInputImage.Width, ObjInputImage.Height];
+            VisitedMap = new int[ObjInputImage.Width, ObjInputImage.Height];
             ReadImage();
             DetectCannyEdges();
-            return;
         }
 
         public Bitmap DisplayImage()
         {
-            int i, j;
-            Bitmap image = new Bitmap(Obj.Width, Obj.Height);
-            BitmapData bitmapData1 = image.LockBits(new Rectangle(0, 0, Obj.Width, Obj.Height),
-                                     ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
+            var image = new Bitmap(ObjInputImage.Width, ObjInputImage.Height);
+            BitmapData bitmapData1 = image.LockBits(new Rectangle(0, 0, ObjInputImage.Width, ObjInputImage.Height),
+                                                    ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
             unsafe
             {
-                byte* imagePointer1 = (byte*)bitmapData1.Scan0;
-
+                byte* imagePointer1 = (byte*) bitmapData1.Scan0;
+                int i;
                 for (i = 0; i < bitmapData1.Height; i++)
                 {
+                    int j;
                     for (j = 0; j < bitmapData1.Width; j++)
                     {
-                        // write the logic implementation here
-                        imagePointer1[0] = (byte)GreyImage[j, i];
-                        imagePointer1[1] = (byte)GreyImage[j, i];
-                        imagePointer1[2] = (byte)GreyImage[j, i];
-                        imagePointer1[3] = (byte)255;
+                        imagePointer1[0] = (byte) GreyImage[j, i];
+                        imagePointer1[1] = (byte) GreyImage[j, i];
+                        imagePointer1[2] = (byte) GreyImage[j, i];
+                        imagePointer1[3] = (byte) 255;
                         //4 bytes per pixel
                         imagePointer1 += 4;
-                    }//end for j
-
-                    //4 bytes per pixel
-                    imagePointer1 += (bitmapData1.Stride - (bitmapData1.Width * 4));
-                }//end for i
-            }//end unsafe
+                    }
+                    imagePointer1 += (bitmapData1.Stride - (bitmapData1.Width*4));
+                }
+            }
             image.UnlockBits(bitmapData1);
-            return image;// col;
-        }      // Display Grey Image
+            return image;
+        }
 
         public Bitmap DisplayImage(float[,] GreyImage)
         {
@@ -187,8 +156,8 @@ namespace CannyProject
         private void ReadImage()
         {
             int i, j;
-            GreyImage = new int[Obj.Width, Obj.Height];  //[Row,Column]
-            Bitmap image = Obj;
+            GreyImage = new int[ObjInputImage.Width, ObjInputImage.Height];  //[Row,Column]
+            Bitmap image = ObjInputImage;
             BitmapData bitmapData1 = image.LockBits(new Rectangle(0, 0, image.Width, image.Height),
                                      ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
             unsafe
@@ -211,7 +180,7 @@ namespace CannyProject
             return;
         }
 
-        private void GenerateGaussianKernel(int N, float S, out int Weight)
+        private int[,] GenerateGaussianKernel(int N, float S, out int Weight)
         {
 
             float Sigma = S;
@@ -221,7 +190,7 @@ namespace CannyProject
             int SizeofKernel = N;
 
             float[,] Kernel = new float[N, N];
-            GaussianKernel = new int[N, N];
+            var gaussianKernel = new int[N, N];
             float[,] OP = new float[N, N];
             float D1, D2;
 
@@ -251,8 +220,8 @@ namespace CannyProject
                     for (j = -SizeofKernel / 2; j <= SizeofKernel / 2; j++)
                     {
                         Kernel[SizeofKernel / 2 + i, SizeofKernel / 2 + j] = (float)Math.Round(Kernel[SizeofKernel / 2 + i, SizeofKernel / 2 + j] * mult, 0);
-                        GaussianKernel[SizeofKernel / 2 + i, SizeofKernel / 2 + j] = (int)Kernel[SizeofKernel / 2 + i, SizeofKernel / 2 + j];
-                        sum = sum + GaussianKernel[SizeofKernel / 2 + i, SizeofKernel / 2 + j];
+                        gaussianKernel[SizeofKernel / 2 + i, SizeofKernel / 2 + j] = (int)Kernel[SizeofKernel / 2 + i, SizeofKernel / 2 + j];
+                        sum = sum + gaussianKernel[SizeofKernel / 2 + i, SizeofKernel / 2 + j];
                     }
 
                 }
@@ -266,8 +235,8 @@ namespace CannyProject
                     for (j = -SizeofKernel / 2; j <= SizeofKernel / 2; j++)
                     {
                         Kernel[SizeofKernel / 2 + i, SizeofKernel / 2 + j] = (float)Math.Round(Kernel[SizeofKernel / 2 + i, SizeofKernel / 2 + j], 0);
-                        GaussianKernel[SizeofKernel / 2 + i, SizeofKernel / 2 + j] = (int)Kernel[SizeofKernel / 2 + i, SizeofKernel / 2 + j];
-                        sum = sum + GaussianKernel[SizeofKernel / 2 + i, SizeofKernel / 2 + j];
+                        gaussianKernel[SizeofKernel / 2 + i, SizeofKernel / 2 + j] = (int)Kernel[SizeofKernel / 2 + i, SizeofKernel / 2 + j];
+                        sum = sum + gaussianKernel[SizeofKernel / 2 + i, SizeofKernel / 2 + j];
                     }
 
                 }
@@ -276,14 +245,14 @@ namespace CannyProject
             //Normalizing kernel Weight
             Weight = sum;
 
-            return;
+            return gaussianKernel;
         }
 
         private int[,] GaussianFilter(int[,] Data)
         {
-            GenerateGaussianKernel(KernelSize, Sigma, out KernelWeight);
+            var gaussianKernel = GenerateGaussianKernel(KernelSize, Sigma, out KernelWeight);
 
-            int[,] Output = new int[Width, Height];
+            int[,] Output = new int[ObjInputImage.Width, ObjInputImage.Height];
             int i, j, k, l;
             int Limit = KernelSize / 2;
 
@@ -293,9 +262,9 @@ namespace CannyProject
             Output = Data; // Removes Unwanted Data Omission due to kernel bias while convolution
 
 
-            for (i = Limit; i <= ((Width - 1) - Limit); i++)
+            for (i = Limit; i <= ((ObjInputImage.Width - 1) - Limit); i++)
             {
-                for (j = Limit; j <= ((Height - 1) - Limit); j++)
+                for (j = Limit; j <= ((ObjInputImage.Height - 1) - Limit); j++)
                 {
                     Sum = 0;
                     for (k = -Limit; k <= Limit; k++)
@@ -303,11 +272,11 @@ namespace CannyProject
 
                         for (l = -Limit; l <= Limit; l++)
                         {
-                            Sum = Sum + ((float)Data[i + k, j + l] * GaussianKernel[Limit + k, Limit + l]);
+                            Sum = Sum + ((float)Data[i + k, j + l] * gaussianKernel[Limit + k, Limit + l]);
 
                         }
                     }
-                    Output[i, j] = (int)(Math.Round(Sum / (float)KernelWeight));
+                    Output[i, j] = (int)(Math.Round(Sum / KernelWeight));
                 }
 
             }
@@ -323,11 +292,11 @@ namespace CannyProject
             Fw = Filter.GetLength(0);
             Fh = Filter.GetLength(1);
             float sum = 0;
-            float[,] Output = new float[Width, Height];
+            float[,] Output = new float[ObjInputImage.Width, ObjInputImage.Height];
 
-            for (i = Fw / 2; i <= (Width - Fw / 2) - 1; i++)
+            for (i = Fw / 2; i <= (ObjInputImage.Width - Fw / 2) - 1; i++)
             {
-                for (j = Fh / 2; j <= (Height - Fh / 2) - 1; j++)
+                for (j = Fh / 2; j <= (ObjInputImage.Height - Fh / 2) - 1; j++)
                 {
                     sum = 0;
                     for (k = -Fw / 2; k <= Fw / 2; k++)
@@ -350,12 +319,12 @@ namespace CannyProject
 
         private void DetectCannyEdges()
         {
-            Gradient = new float[Width, Height];
-            NonMax = new float[Width, Height];
-            PostHysteresis = new int[Width, Height];
+            Gradient = new float[ObjInputImage.Width, ObjInputImage.Height];
+            NonMax = new float[ObjInputImage.Width, ObjInputImage.Height];
+            PostHysteresis = new int[ObjInputImage.Width, ObjInputImage.Height];
 
-            DerivativeX = new float[Width, Height];
-            DerivativeY = new float[Width, Height];
+            DerivativeX = new float[ObjInputImage.Width, ObjInputImage.Height];
+            DerivativeY = new float[ObjInputImage.Width, ObjInputImage.Height];
 
             //Gaussian Filter Input Image 
 
@@ -376,9 +345,9 @@ namespace CannyProject
             int i, j;
 
             //Compute the gradient magnitude based on derivatives in x and y:
-            for (i = 0; i <= (Width - 1); i++)
+            for (i = 0; i <= (ObjInputImage.Width - 1); i++)
             {
-                for (j = 0; j <= (Height - 1); j++)
+                for (j = 0; j <= (ObjInputImage.Height - 1); j++)
                 {
                     Gradient[i, j] = (float)Math.Sqrt((DerivativeX[i, j] * DerivativeX[i, j]) + (DerivativeY[i, j] * DerivativeY[i, j]));
 
@@ -388,9 +357,9 @@ namespace CannyProject
             // Perform Non maximum suppression:
             // NonMax = Gradient;
 
-            for (i = 0; i <= (Width - 1); i++)
+            for (i = 0; i <= (ObjInputImage.Width - 1); i++)
             {
-                for (j = 0; j <= (Height - 1); j++)
+                for (j = 0; j <= (ObjInputImage.Height - 1); j++)
                 {
                     NonMax[i, j] = Gradient[i, j];
                 }
@@ -401,9 +370,9 @@ namespace CannyProject
             float Tangent;
 
 
-            for (i = Limit; i <= (Width - Limit) - 1; i++)
+            for (i = Limit; i <= (ObjInputImage.Width - Limit) - 1; i++)
             {
-                for (j = Limit; j <= (Height - Limit) - 1; j++)
+                for (j = Limit; j <= (ObjInputImage.Height - Limit) - 1; j++)
                 {
 
                     if (DerivativeX[i, j] == 0)
@@ -447,9 +416,9 @@ namespace CannyProject
 
 
             //PostHysteresis = NonMax;
-            for (r = Limit; r <= (Width - Limit) - 1; r++)
+            for (r = Limit; r <= (ObjInputImage.Width - Limit) - 1; r++)
             {
-                for (c = Limit; c <= (Height - Limit) - 1; c++)
+                for (c = Limit; c <= (ObjInputImage.Height - Limit) - 1; c++)
                 {
 
                     PostHysteresis[r, c] = (int)NonMax[r, c];
@@ -461,8 +430,8 @@ namespace CannyProject
             float min, max;
             min = 100;
             max = 0;
-            for (r = Limit; r <= (Width - Limit) - 1; r++)
-                for (c = Limit; c <= (Height - Limit) - 1; c++)
+            for (r = Limit; r <= (ObjInputImage.Width - Limit) - 1; r++)
+                for (c = Limit; c <= (ObjInputImage.Height - Limit) - 1; c++)
                 {
                     if (PostHysteresis[r, c] > max)
                     {
@@ -475,13 +444,13 @@ namespace CannyProject
                     }
                 }
 
-            GNH = new float[Width, Height];
-            GNL = new float[Width, Height]; ;
-            EdgePoints = new int[Width, Height];
+            GNH = new float[ObjInputImage.Width, ObjInputImage.Height];
+            GNL = new float[ObjInputImage.Width, ObjInputImage.Height]; ;
+            EdgePoints = new int[ObjInputImage.Width, ObjInputImage.Height];
 
-            for (r = Limit; r <= (Width - Limit) - 1; r++)
+            for (r = Limit; r <= (ObjInputImage.Width - Limit) - 1; r++)
             {
-                for (c = Limit; c <= (Height - Limit) - 1; c++)
+                for (c = Limit; c <= (ObjInputImage.Height - Limit) - 1; c++)
                 {
                     if (PostHysteresis[r, c] >= MaxHysteresisThresh)
                     {
@@ -503,14 +472,13 @@ namespace CannyProject
 
             HysterisisThresholding(EdgePoints);
 
-            for (i = 0; i <= (Width - 1); i++)
-                for (j = 0; j <= (Height - 1); j++)
+            for (i = 0; i <= (ObjInputImage.Width - 1); i++)
+            {
+                for (j = 0; j <= (ObjInputImage.Height - 1); j++)
                 {
-                    EdgeMap[i, j] = EdgeMap[i, j] * 255;
+                    EdgeMap[i, j] = EdgeMap[i, j]*255;
                 }
-
-            return;
-
+            }
         }
 
         private void HysterisisThresholding(int[,] Edges)
@@ -520,20 +488,20 @@ namespace CannyProject
             int Limit = KernelSize / 2;
 
 
-            for (i = Limit; i <= (Width - 1) - Limit; i++)
-                for (j = Limit; j <= (Height - 1) - Limit; j++)
+            for (i = Limit; i <= (ObjInputImage.Width - 1) - Limit; i++)
+            {
+                for (j = Limit; j <= (ObjInputImage.Height - 1) - Limit; j++)
                 {
                     if (Edges[i, j] == 1)
                     {
                         EdgeMap[i, j] = 1;
-
                     }
-
                 }
+            }
 
-            for (i = Limit; i <= (Width - 1) - Limit; i++)
+            for (i = Limit; i <= (ObjInputImage.Width - 1) - Limit; i++)
             {
-                for (j = Limit; j <= (Height - 1) - Limit; j++)
+                for (j = Limit; j <= (ObjInputImage.Height - 1) - Limit; j++)
                 {
                     if (Edges[i, j] == 1)
                     {
@@ -543,16 +511,10 @@ namespace CannyProject
                     }
                 }
             }
-
-
-
-
-            return;
         }
 
         private void Travers(int X, int Y)
         {
-
 
             if (VisitedMap[X, Y] == 1)
             {
@@ -629,11 +591,8 @@ namespace CannyProject
                 return;
             }
 
-
             //VisitedMap[X, Y] = 1;
             return;
         }
-
-        //Canny Class Ends
     }
 }
