@@ -57,101 +57,37 @@ namespace CannyProject
             DetectCannyEdges();
         }
 
-        public Bitmap DisplayImage()
+        public Bitmap GetDisplayedImage(int[,] greyImage)
         {
-            var image = new Bitmap(ObjInputImage.Width, ObjInputImage.Height);
-            BitmapData bitmapData1 = image.LockBits(new Rectangle(0, 0, ObjInputImage.Width, ObjInputImage.Height),
-                                                    ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
+            int width = greyImage.GetLength(0);
+            int height = greyImage.GetLength(1);
+            return GetDisplayedImage(greyImage, width, height);
+        }
+
+        private Bitmap GetDisplayedImage(int[,] greyImage, int width, int height)
+        {
+            var image = new Bitmap(width, height);
+            BitmapData bitmapData1 = image.LockBits(new Rectangle(0, 0, width, height),
+                                     ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
             unsafe
             {
-                byte* imagePointer1 = (byte*) bitmapData1.Scan0;
-                int i;
-                for (i = 0; i < bitmapData1.Height; i++)
+                var imagePointer1 = (byte*)bitmapData1.Scan0;
+                for (var i = 0; i < bitmapData1.Height; i++)
                 {
-                    int j;
-                    for (j = 0; j < bitmapData1.Width; j++)
+                    for (var j = 0; j < bitmapData1.Width; j++)
                     {
-                        imagePointer1[0] = (byte) GreyImage[j, i];
-                        imagePointer1[1] = (byte) GreyImage[j, i];
-                        imagePointer1[2] = (byte) GreyImage[j, i];
-                        imagePointer1[3] = (byte) 255;
-                        //4 bytes per pixel
+                        imagePointer1[0] = (byte)greyImage[j, i];
+                        imagePointer1[1] = (byte)greyImage[j, i];
+                        imagePointer1[2] = (byte)greyImage[j, i];
+                        imagePointer1[3] = 255;
                         imagePointer1 += 4;
                     }
-                    imagePointer1 += (bitmapData1.Stride - (bitmapData1.Width*4));
+                    imagePointer1 += (bitmapData1.Stride - (bitmapData1.Width * 4));
                 }
             }
             image.UnlockBits(bitmapData1);
             return image;
         }
-
-        public Bitmap DisplayImage(float[,] GreyImage)
-        {
-            int i, j;
-            int W, H;
-            W = GreyImage.GetLength(0);
-            H = GreyImage.GetLength(1);
-            Bitmap image = new Bitmap(W, H);
-            BitmapData bitmapData1 = image.LockBits(new Rectangle(0, 0, W, H),
-                                     ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
-            unsafe
-            {
-
-                byte* imagePointer1 = (byte*)bitmapData1.Scan0;
-
-                for (i = 0; i < bitmapData1.Height; i++)
-                {
-                    for (j = 0; j < bitmapData1.Width; j++)
-                    {
-                        // write the logic implementation here
-                        imagePointer1[0] = (byte)((int)(GreyImage[j, i]));
-                        imagePointer1[1] = (byte)((int)(GreyImage[j, i]));
-                        imagePointer1[2] = (byte)((int)(GreyImage[j, i]));
-                        imagePointer1[3] = (byte)255;
-                        //4 bytes per pixel
-                        imagePointer1 += 4;
-                    }   //end for j
-                    //4 bytes per pixel
-                    imagePointer1 += (bitmapData1.Stride - (bitmapData1.Width * 4));
-                }//End for i
-            }//end unsafe
-            image.UnlockBits(bitmapData1);
-            return image;// col;
-        }      // Display Grey Imag
-
-        public Bitmap DisplayImage(int[,] GreyImage)
-        {
-            int i, j;
-            int W, H;
-            W = GreyImage.GetLength(0);
-            H = GreyImage.GetLength(1);
-            Bitmap image = new Bitmap(W, H);
-            BitmapData bitmapData1 = image.LockBits(new Rectangle(0, 0, W, H),
-                                     ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
-            unsafe
-            {
-
-                byte* imagePointer1 = (byte*)bitmapData1.Scan0;
-
-                for (i = 0; i < bitmapData1.Height; i++)
-                {
-                    for (j = 0; j < bitmapData1.Width; j++)
-                    {
-                        // write the logic implementation here
-                        imagePointer1[0] = (byte)GreyImage[j, i];
-                        imagePointer1[1] = (byte)GreyImage[j, i];
-                        imagePointer1[2] = (byte)GreyImage[j, i];
-                        imagePointer1[3] = (byte)255;
-                        //4 bytes per pixel
-                        imagePointer1 += 4;
-                    }   //end for j
-                    //4 bytes per pixel
-                    imagePointer1 += (bitmapData1.Stride - (bitmapData1.Width * 4));
-                }//End for i
-            }//end unsafe
-            image.UnlockBits(bitmapData1);
-            return image;// col;
-        }      // Display Grey Image
 
         private void ReadImage()
         {
