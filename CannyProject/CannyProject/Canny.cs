@@ -15,9 +15,7 @@ namespace CannyProject
         float Sigma = 1;   // for N=2 Sigma =0.85  N=5 Sigma =1, N=9 Sigma = 2    2*Sigma = (int)N/2
         //Canny Edge Detection Parameters
         float MaxHysteresisThresh, MinHysteresisThresh;
-        public float[,] DerivativeX;
-        public float[,] DerivativeY;
-        public int[,] FilteredImage;
+        public int[,] GaussianFilterImage;
         public float[,] Gradient;
         public float[,] NonMax;
         public int[,] PostHysteresis;
@@ -91,166 +89,24 @@ namespace CannyProject
 
         private void ReadImage()
         {
-            int i, j;
-            GreyImage = new int[ObjInputImage.Width, ObjInputImage.Height];  //[Row,Column]
+            GreyImage = new int[ObjInputImage.Width,ObjInputImage.Height]; //[Row,Column]
             Bitmap image = ObjInputImage;
             BitmapData bitmapData1 = image.LockBits(new Rectangle(0, 0, image.Width, image.Height),
-                                     ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
+                                                    ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
             unsafe
             {
-                byte* imagePointer1 = (byte*)bitmapData1.Scan0;
-
-                for (i = 0; i < bitmapData1.Height; i++)
+                byte* imagePointer1 = (byte*) bitmapData1.Scan0;
+                for (var i = 0; i < bitmapData1.Height; i++)
                 {
-                    for (j = 0; j < bitmapData1.Width; j++)
+                    for (var j = 0; j < bitmapData1.Width; j++)
                     {
-                        GreyImage[j, i] = (int)((imagePointer1[0] + imagePointer1[1] + imagePointer1[2]) / 3.0);
-                        //4 bytes per pixel
+                        GreyImage[j, i] = (int) ((imagePointer1[0] + imagePointer1[1] + imagePointer1[2])/3.0);
                         imagePointer1 += 4;
-                    }//end for j
-                    //4 bytes per pixel
-                    imagePointer1 += bitmapData1.Stride - (bitmapData1.Width * 4);
-                }//end for i
-            }//end unsafe
+                    }
+                    imagePointer1 += bitmapData1.Stride - (bitmapData1.Width*4);
+                }
+            }
             image.UnlockBits(bitmapData1);
-            return;
-        }
-
-        private int[,] GenerateGaussianKernel(int N, float S, out int Weight)
-        {
-
-            float Sigma = S;
-            float pi;
-            pi = (float)Math.PI;
-            int i, j;
-            int SizeofKernel = N;
-
-            float[,] Kernel = new float[N, N];
-            var gaussianKernel = new int[N, N];
-            float[,] OP = new float[N, N];
-            float D1, D2;
-
-
-            D1 = 1 / (2 * pi * Sigma * Sigma);
-            D2 = 2 * Sigma * Sigma;
-
-            float min = 1000;
-
-            for (i = -SizeofKernel / 2; i <= SizeofKernel / 2; i++)
-            {
-                for (j = -SizeofKernel / 2; j <= SizeofKernel / 2; j++)
-                {
-                    Kernel[SizeofKernel / 2 + i, SizeofKernel / 2 + j] = ((1 / D1) * (float)Math.Exp(-(i * i + j * j) / D2));
-                    if (Kernel[SizeofKernel / 2 + i, SizeofKernel / 2 + j] < min)
-                        min = Kernel[SizeofKernel / 2 + i, SizeofKernel / 2 + j];
-
-                }
-            }
-            int mult = (int)(1 / min);
-            int sum = 0;
-            if ((min > 0) && (min < 1))
-            {
-
-                for (i = -SizeofKernel / 2; i <= SizeofKernel / 2; i++)
-                {
-                    for (j = -SizeofKernel / 2; j <= SizeofKernel / 2; j++)
-                    {
-                        Kernel[SizeofKernel / 2 + i, SizeofKernel / 2 + j] = (float)Math.Round(Kernel[SizeofKernel / 2 + i, SizeofKernel / 2 + j] * mult, 0);
-                        gaussianKernel[SizeofKernel / 2 + i, SizeofKernel / 2 + j] = (int)Kernel[SizeofKernel / 2 + i, SizeofKernel / 2 + j];
-                        sum = sum + gaussianKernel[SizeofKernel / 2 + i, SizeofKernel / 2 + j];
-                    }
-
-                }
-
-            }
-            else
-            {
-                sum = 0;
-                for (i = -SizeofKernel / 2; i <= SizeofKernel / 2; i++)
-                {
-                    for (j = -SizeofKernel / 2; j <= SizeofKernel / 2; j++)
-                    {
-                        Kernel[SizeofKernel / 2 + i, SizeofKernel / 2 + j] = (float)Math.Round(Kernel[SizeofKernel / 2 + i, SizeofKernel / 2 + j], 0);
-                        gaussianKernel[SizeofKernel / 2 + i, SizeofKernel / 2 + j] = (int)Kernel[SizeofKernel / 2 + i, SizeofKernel / 2 + j];
-                        sum = sum + gaussianKernel[SizeofKernel / 2 + i, SizeofKernel / 2 + j];
-                    }
-
-                }
-
-            }
-            //Normalizing kernel Weight
-            Weight = sum;
-
-            return gaussianKernel;
-        }
-
-        private int[,] GaussianFilter(int[,] Data)
-        {
-            var gaussianKernel = GenerateGaussianKernel(KernelSize, Sigma, out KernelWeight);
-
-            int[,] Output = new int[ObjInputImage.Width, ObjInputImage.Height];
-            int i, j, k, l;
-            int Limit = KernelSize / 2;
-
-            float Sum = 0;
-
-
-            Output = Data; // Removes Unwanted Data Omission due to kernel bias while convolution
-
-
-            for (i = Limit; i <= ((ObjInputImage.Width - 1) - Limit); i++)
-            {
-                for (j = Limit; j <= ((ObjInputImage.Height - 1) - Limit); j++)
-                {
-                    Sum = 0;
-                    for (k = -Limit; k <= Limit; k++)
-                    {
-
-                        for (l = -Limit; l <= Limit; l++)
-                        {
-                            Sum = Sum + ((float)Data[i + k, j + l] * gaussianKernel[Limit + k, Limit + l]);
-
-                        }
-                    }
-                    Output[i, j] = (int)(Math.Round(Sum / KernelWeight));
-                }
-
-            }
-
-
-            return Output;
-        }
-
-        private float[,] Differentiate(int[,] Data, int[,] Filter)
-        {
-            int i, j, k, l, Fh, Fw;
-
-            Fw = Filter.GetLength(0);
-            Fh = Filter.GetLength(1);
-            float sum = 0;
-            float[,] Output = new float[ObjInputImage.Width, ObjInputImage.Height];
-
-            for (i = Fw / 2; i <= (ObjInputImage.Width - Fw / 2) - 1; i++)
-            {
-                for (j = Fh / 2; j <= (ObjInputImage.Height - Fh / 2) - 1; j++)
-                {
-                    sum = 0;
-                    for (k = -Fw / 2; k <= Fw / 2; k++)
-                    {
-                        for (l = -Fh / 2; l <= Fh / 2; l++)
-                        {
-                            sum = sum + Data[i + k, j + l] * Filter[Fw / 2 + k, Fh / 2 + l];
-
-
-                        }
-                    }
-                    Output[i, j] = sum;
-
-                }
-
-            }
-            return Output;
-
         }
 
         private void DetectCannyEdges()
@@ -259,43 +115,19 @@ namespace CannyProject
             NonMax = new float[ObjInputImage.Width, ObjInputImage.Height];
             PostHysteresis = new int[ObjInputImage.Width, ObjInputImage.Height];
 
-            DerivativeX = new float[ObjInputImage.Width, ObjInputImage.Height];
-            DerivativeY = new float[ObjInputImage.Width, ObjInputImage.Height];
-
-            //Gaussian Filter Input Image 
-
-            FilteredImage = GaussianFilter(GreyImage);
-            //Sobel Masks
-            int[,] Dx = {{1,0,-1},
-                         {1,0,-1},
-                         {1,0,-1}};
-
-            int[,] Dy = {{1,1,1},
-                         {0,0,0},
-                         {-1,-1,-1}};
-
-
-            DerivativeX = Differentiate(FilteredImage, Dx);
-            DerivativeY = Differentiate(FilteredImage, Dy);
-
-            int i, j;
+            GaussianFilterImage = GetGaussianFilterImage(GreyImage);
+            float[,] derivativeX = GetDifferentiateX(GaussianFilterImage);
+            float[,] derivativeY = GetDifferentiateY(GaussianFilterImage);
 
             //Compute the gradient magnitude based on derivatives in x and y:
-            for (i = 0; i <= (ObjInputImage.Width - 1); i++)
-            {
-                for (j = 0; j <= (ObjInputImage.Height - 1); j++)
-                {
-                    Gradient[i, j] = (float)Math.Sqrt((DerivativeX[i, j] * DerivativeX[i, j]) + (DerivativeY[i, j] * DerivativeY[i, j]));
+            ComputeGradientByDerivativesXY(derivativeX, derivativeY);
 
-                }
-
-            }
             // Perform Non maximum suppression:
             // NonMax = Gradient;
 
-            for (i = 0; i <= (ObjInputImage.Width - 1); i++)
+            for (var i = 0; i <= (ObjInputImage.Width - 1); i++)
             {
-                for (j = 0; j <= (ObjInputImage.Height - 1); j++)
+                for (var j = 0; j <= (ObjInputImage.Height - 1); j++)
                 {
                     NonMax[i, j] = Gradient[i, j];
                 }
@@ -306,15 +138,15 @@ namespace CannyProject
             float Tangent;
 
 
-            for (i = Limit; i <= (ObjInputImage.Width - Limit) - 1; i++)
+            for (var i = Limit; i <= (ObjInputImage.Width - Limit) - 1; i++)
             {
-                for (j = Limit; j <= (ObjInputImage.Height - Limit) - 1; j++)
+                for (var j = Limit; j <= (ObjInputImage.Height - Limit) - 1; j++)
                 {
 
-                    if (DerivativeX[i, j] == 0)
+                    if (derivativeX[i, j] == 0)
                         Tangent = 90F;
                     else
-                        Tangent = (float)(Math.Atan(DerivativeY[i, j] / DerivativeX[i, j]) * 180 / Math.PI); //rad to degree
+                        Tangent = (float)(Math.Atan(derivativeY[i, j] / derivativeX[i, j]) * 180 / Math.PI); //rad to degree
 
 
 
@@ -381,7 +213,7 @@ namespace CannyProject
                 }
 
             GNH = new float[ObjInputImage.Width, ObjInputImage.Height];
-            GNL = new float[ObjInputImage.Width, ObjInputImage.Height]; ;
+            GNL = new float[ObjInputImage.Width, ObjInputImage.Height];
             EdgePoints = new int[ObjInputImage.Width, ObjInputImage.Height];
 
             for (r = Limit; r <= (ObjInputImage.Width - Limit) - 1; r++)
@@ -408,25 +240,171 @@ namespace CannyProject
 
             HysterisisThresholding(EdgePoints);
 
-            for (i = 0; i <= (ObjInputImage.Width - 1); i++)
+            for (var i = 0; i <= (ObjInputImage.Width - 1); i++)
             {
-                for (j = 0; j <= (ObjInputImage.Height - 1); j++)
+                for (var j = 0; j <= (ObjInputImage.Height - 1); j++)
                 {
                     EdgeMap[i, j] = EdgeMap[i, j]*255;
                 }
             }
         }
 
-        private void HysterisisThresholding(int[,] Edges)
+        private void ComputeGradientByDerivativesXY(float[,] derivativeX, float[,] derivativeY)
+        {
+            for (var i = 0; i <= (ObjInputImage.Width - 1); i++)
+            {
+                for (var j = 0; j <= (ObjInputImage.Height - 1); j++)
+                {
+                    Gradient[i, j] = (float)Math.Sqrt((derivativeX[i, j] * derivativeX[i, j]) + (derivativeY[i, j] * derivativeY[i, j]));
+                }
+            }
+        }
+
+        private int[,] GetGaussianFilterImage(int[,] data)
+        {
+            var gaussianKernel = GenerateGaussianKernel(KernelSize, Sigma, out KernelWeight);
+            int limit = KernelSize / 2;
+            int[,] output = data;
+
+            for (var i = limit; i <= ((ObjInputImage.Width - 1) - limit); i++)
+            {
+                for (var j = limit; j <= ((ObjInputImage.Height - 1) - limit); j++)
+                {
+                    float sum = 0;
+                    for (var k = -limit; k <= limit; k++)
+                    {
+                        for (var l = -limit; l <= limit; l++)
+                        {
+                            sum = sum + ((float)data[i + k, j + l] * gaussianKernel[limit + k, limit + l]);
+                        }
+                    }
+                    output[i, j] = (int)(Math.Round(sum / KernelWeight));
+                }
+            }
+            return output;
+        }
+
+        private int[,] GenerateGaussianKernel(int N, float S, out int Weight)
         {
 
-            int i, j;
+            float Sigma = S;
+            float pi;
+            pi = (float)Math.PI;
+            int SizeofKernel = N;
+
+            float[,] Kernel = new float[N, N];
+            var gaussianKernel = new int[N, N];
+            float[,] OP = new float[N, N];
+            float D1, D2;
+
+
+            D1 = 1 / (2 * pi * Sigma * Sigma);
+            D2 = 2 * Sigma * Sigma;
+
+            float min = 1000;
+
+            for (var i = -SizeofKernel / 2; i <= SizeofKernel / 2; i++)
+            {
+                for (var j = -SizeofKernel / 2; j <= SizeofKernel / 2; j++)
+                {
+                    Kernel[SizeofKernel / 2 + i, SizeofKernel / 2 + j] = ((1 / D1) * (float)Math.Exp(-(i * i + j * j) / D2));
+                    if (Kernel[SizeofKernel / 2 + i, SizeofKernel / 2 + j] < min)
+                        min = Kernel[SizeofKernel / 2 + i, SizeofKernel / 2 + j];
+
+                }
+            }
+            int mult = (int)(1 / min);
+            int sum = 0;
+            if ((min > 0) && (min < 1))
+            {
+
+                for (var i = -SizeofKernel / 2; i <= SizeofKernel / 2; i++)
+                {
+                    for (var j = -SizeofKernel / 2; j <= SizeofKernel / 2; j++)
+                    {
+                        Kernel[SizeofKernel / 2 + i, SizeofKernel / 2 + j] = (float)Math.Round(Kernel[SizeofKernel / 2 + i, SizeofKernel / 2 + j] * mult, 0);
+                        gaussianKernel[SizeofKernel / 2 + i, SizeofKernel / 2 + j] = (int)Kernel[SizeofKernel / 2 + i, SizeofKernel / 2 + j];
+                        sum = sum + gaussianKernel[SizeofKernel / 2 + i, SizeofKernel / 2 + j];
+                    }
+
+                }
+
+            }
+            else
+            {
+                sum = 0;
+                for (var i = -SizeofKernel / 2; i <= SizeofKernel / 2; i++)
+                {
+                    for (var j = -SizeofKernel / 2; j <= SizeofKernel / 2; j++)
+                    {
+                        Kernel[SizeofKernel / 2 + i, SizeofKernel / 2 + j] = (float)Math.Round(Kernel[SizeofKernel / 2 + i, SizeofKernel / 2 + j], 0);
+                        gaussianKernel[SizeofKernel / 2 + i, SizeofKernel / 2 + j] = (int)Kernel[SizeofKernel / 2 + i, SizeofKernel / 2 + j];
+                        sum = sum + gaussianKernel[SizeofKernel / 2 + i, SizeofKernel / 2 + j];
+                    }
+
+                }
+
+            }
+            //Normalizing kernel Weight
+            Weight = sum;
+
+            return gaussianKernel;
+        }
+
+        private float[,] GetDifferentiateX(int[,] gaussianFilterImage)
+        {
+            int[,] sobelMasksDx =
+                {
+                    {1, 0, -1},
+                    {1, 0, -1},
+                    {1, 0, -1}
+                };
+            return Differentiate(gaussianFilterImage, sobelMasksDx);
+        }
+
+        private float[,] GetDifferentiateY(int[,] gaussianFilterImage)
+        {
+            int[,] sobelMasksDy =
+                {
+                    {1, 1, 1},
+                    {0, 0, 0},
+                    {-1, -1, -1}
+                };
+            return Differentiate(gaussianFilterImage, sobelMasksDy);
+        }
+
+        private float[,] Differentiate(int[,] data, int[,] filter)
+        {
+            var filterWidth = filter.GetLength(0);
+            var filterHeight = filter.GetLength(1);
+            var output = new float[ObjInputImage.Width, ObjInputImage.Height];
+
+            for (var i = filterWidth / 2; i <= (ObjInputImage.Width - filterWidth / 2) - 1; i++)
+            {
+                for (var j = filterHeight / 2; j <= (ObjInputImage.Height - filterHeight / 2) - 1; j++)
+                {
+                    float sum = 0;
+                    for (var k = -filterWidth / 2; k <= filterWidth / 2; k++)
+                    {
+                        for (var l = -filterHeight / 2; l <= filterHeight / 2; l++)
+                        {
+                            sum = sum + data[i + k, j + l] * filter[filterWidth / 2 + k, filterHeight / 2 + l];
+                        }
+                    }
+                    output[i, j] = sum;
+                }
+            }
+            return output;
+        }
+
+        private void HysterisisThresholding(int[,] Edges)
+        {
             int Limit = KernelSize / 2;
 
 
-            for (i = Limit; i <= (ObjInputImage.Width - 1) - Limit; i++)
+            for (var i = Limit; i <= (ObjInputImage.Width - 1) - Limit; i++)
             {
-                for (j = Limit; j <= (ObjInputImage.Height - 1) - Limit; j++)
+                for (var j = Limit; j <= (ObjInputImage.Height - 1) - Limit; j++)
                 {
                     if (Edges[i, j] == 1)
                     {
@@ -435,9 +413,9 @@ namespace CannyProject
                 }
             }
 
-            for (i = Limit; i <= (ObjInputImage.Width - 1) - Limit; i++)
+            for (var i = Limit; i <= (ObjInputImage.Width - 1) - Limit; i++)
             {
-                for (j = Limit; j <= (ObjInputImage.Height - 1) - Limit; j++)
+                for (var j = Limit; j <= (ObjInputImage.Height - 1) - Limit; j++)
                 {
                     if (Edges[i, j] == 1)
                     {

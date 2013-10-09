@@ -55,7 +55,7 @@ namespace CannyProject
             var MaskSize = Convert.ToInt32(TxtGMask.Text);
             var Sigma = (float)Convert.ToDouble(TxtSigma.Text);
             var CannyData = new Canny((Bitmap)uiInputImagePictureBox.Image, TH, TL, MaskSize, Sigma);
-            uiGaussianFilteredImagePictureBox.Image = CannyData.GetDisplayedImage(CannyData.FilteredImage);
+            uiGaussianFilteredImagePictureBox.Image = CannyData.GetDisplayedImage(CannyData.GaussianFilterImage);
 
             uiFinalCannyPictureBox.Image = CannyData.GetDisplayedImage(CannyData.EdgeMap);
 
