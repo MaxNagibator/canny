@@ -10,7 +10,6 @@ namespace CannyProject
         public int[,] GreyImage;
 
         //Gaussian Kernel Data
-        int KernelWeight;
         int KernelSize = 5;
         float Sigma = 1;   // for N=2 Sigma =0.85  N=5 Sigma =1, N=9 Sigma = 2    2*Sigma = (int)N/2
         //Canny Edge Detection Parameters
@@ -233,7 +232,8 @@ namespace CannyProject
 
         private int[,] GetGaussianFilterImage(int[,] data)
         {
-            var gaussianKernel = GenerateGaussianKernel(KernelSize, Sigma, out KernelWeight);
+            int kernelWeight;
+            var gaussianKernel = GetGaussianKernel(KernelSize, Sigma, out kernelWeight);
             int limit = KernelSize / 2;
             int[,] output = data;
 
@@ -249,28 +249,26 @@ namespace CannyProject
                             sum = sum + ((float)data[i + k, j + l] * gaussianKernel[limit + k, limit + l]);
                         }
                     }
-                    output[i, j] = (int)(Math.Round(sum / KernelWeight));
+                    output[i, j] = (int)(Math.Round(sum / kernelWeight));
                 }
             }
             return output;
         }
 
-        private int[,] GenerateGaussianKernel(int N, float S, out int Weight)
+        private int[,] GetGaussianKernel(int kernelSize, float sigma, out int Weight)
         {
-
-            float Sigma = S;
             float pi;
             pi = (float)Math.PI;
-            int SizeofKernel = N;
+            int SizeofKernel = kernelSize;
 
-            float[,] Kernel = new float[N, N];
-            var gaussianKernel = new int[N, N];
-            float[,] OP = new float[N, N];
+            float[,] Kernel = new float[kernelSize, kernelSize];
+            var gaussianKernel = new int[kernelSize, kernelSize];
+            float[,] OP = new float[kernelSize, kernelSize];
             float D1, D2;
 
 
-            D1 = 1 / (2 * pi * Sigma * Sigma);
-            D2 = 2 * Sigma * Sigma;
+            D1 = 1 / (2 * pi * sigma * sigma);
+            D2 = 2 * sigma * sigma;
 
             float min = 1000;
 
