@@ -36,19 +36,23 @@
             this.uiInputImagePictureBox = new System.Windows.Forms.PictureBox();
             this.uiGaussianFilteredImagePictureBox = new System.Windows.Forms.PictureBox();
             this.uiFinalCannyPictureBox = new System.Windows.Forms.PictureBox();
-            this.label9 = new System.Windows.Forms.Label();
-            this.label10 = new System.Windows.Forms.Label();
-            this.TxtSigma = new System.Windows.Forms.TextBox();
-            this.TxtGMask = new System.Windows.Forms.TextBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
-            this.TxtTL = new System.Windows.Forms.TextBox();
+            this.uiSigmaLabel = new System.Windows.Forms.Label();
+            this.uiGaussianMaskSizeLabel = new System.Windows.Forms.Label();
+            this.uiSigmaTextBox = new System.Windows.Forms.TextBox();
+            this.uiGaussianMaskSizeTextBox = new System.Windows.Forms.TextBox();
+            this.uiLowThresholdLabel = new System.Windows.Forms.Label();
+            this.uiHighThresholdLabel = new System.Windows.Forms.Label();
+            this.uiLowThresholdTextBox = new System.Windows.Forms.TextBox();
             this.uiCalcButton = new System.Windows.Forms.Button();
-            this.TxtTH = new System.Windows.Forms.TextBox();
+            this.uiHighThresholdTextBox = new System.Windows.Forms.TextBox();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.uiInputImagePictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.uiGaussianFilteredImagePictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.uiFinalCannyPictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.SuspendLayout();
             // 
             // toolStrip1
@@ -58,7 +62,7 @@
             this.toolStripLabel4});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
             this.toolStrip1.Name = "toolStrip1";
-            this.toolStrip1.Size = new System.Drawing.Size(664, 25);
+            this.toolStrip1.Size = new System.Drawing.Size(1068, 25);
             this.toolStrip1.TabIndex = 13;
             this.toolStrip1.Text = "toolStrip1";
             // 
@@ -95,7 +99,7 @@
             // 
             // uiGaussianFilteredImagePictureBox
             // 
-            this.uiGaussianFilteredImagePictureBox.Location = new System.Drawing.Point(276, 41);
+            this.uiGaussianFilteredImagePictureBox.Location = new System.Drawing.Point(281, 41);
             this.uiGaussianFilteredImagePictureBox.Name = "uiGaussianFilteredImagePictureBox";
             this.uiGaussianFilteredImagePictureBox.Size = new System.Drawing.Size(256, 196);
             this.uiGaussianFilteredImagePictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -111,65 +115,65 @@
             this.uiFinalCannyPictureBox.TabIndex = 58;
             this.uiFinalCannyPictureBox.TabStop = false;
             // 
-            // label9
+            // uiSigmaLabel
             // 
-            this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(278, 360);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(36, 13);
-            this.label9.TabIndex = 70;
-            this.label9.Text = "Sigma";
+            this.uiSigmaLabel.AutoSize = true;
+            this.uiSigmaLabel.Location = new System.Drawing.Point(278, 360);
+            this.uiSigmaLabel.Name = "uiSigmaLabel";
+            this.uiSigmaLabel.Size = new System.Drawing.Size(36, 13);
+            this.uiSigmaLabel.TabIndex = 70;
+            this.uiSigmaLabel.Text = "Sigma";
             // 
-            // label10
+            // uiGaussianMaskSizeLabel
             // 
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(278, 321);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(103, 13);
-            this.label10.TabIndex = 69;
-            this.label10.Text = "Gaussian Mask Size";
+            this.uiGaussianMaskSizeLabel.AutoSize = true;
+            this.uiGaussianMaskSizeLabel.Location = new System.Drawing.Point(278, 321);
+            this.uiGaussianMaskSizeLabel.Name = "uiGaussianMaskSizeLabel";
+            this.uiGaussianMaskSizeLabel.Size = new System.Drawing.Size(103, 13);
+            this.uiGaussianMaskSizeLabel.TabIndex = 69;
+            this.uiGaussianMaskSizeLabel.Text = "Gaussian Mask Size";
             // 
-            // TxtSigma
+            // uiSigmaTextBox
             // 
-            this.TxtSigma.Location = new System.Drawing.Point(281, 376);
-            this.TxtSigma.Name = "TxtSigma";
-            this.TxtSigma.Size = new System.Drawing.Size(41, 20);
-            this.TxtSigma.TabIndex = 68;
-            this.TxtSigma.Text = "1";
+            this.uiSigmaTextBox.Location = new System.Drawing.Point(281, 376);
+            this.uiSigmaTextBox.Name = "uiSigmaTextBox";
+            this.uiSigmaTextBox.Size = new System.Drawing.Size(41, 20);
+            this.uiSigmaTextBox.TabIndex = 68;
+            this.uiSigmaTextBox.Text = "1";
             // 
-            // TxtGMask
+            // uiGaussianMaskSizeTextBox
             // 
-            this.TxtGMask.Location = new System.Drawing.Point(281, 337);
-            this.TxtGMask.Name = "TxtGMask";
-            this.TxtGMask.Size = new System.Drawing.Size(38, 20);
-            this.TxtGMask.TabIndex = 67;
-            this.TxtGMask.Text = "5";
+            this.uiGaussianMaskSizeTextBox.Location = new System.Drawing.Point(281, 337);
+            this.uiGaussianMaskSizeTextBox.Name = "uiGaussianMaskSizeTextBox";
+            this.uiGaussianMaskSizeTextBox.Size = new System.Drawing.Size(38, 20);
+            this.uiGaussianMaskSizeTextBox.TabIndex = 67;
+            this.uiGaussianMaskSizeTextBox.Text = "5";
             // 
-            // label2
+            // uiLowThresholdLabel
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(278, 282);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(93, 13);
-            this.label2.TabIndex = 66;
-            this.label2.Text = "Low Threshold TL";
+            this.uiLowThresholdLabel.AutoSize = true;
+            this.uiLowThresholdLabel.Location = new System.Drawing.Point(278, 282);
+            this.uiLowThresholdLabel.Name = "uiLowThresholdLabel";
+            this.uiLowThresholdLabel.Size = new System.Drawing.Size(93, 13);
+            this.uiLowThresholdLabel.TabIndex = 66;
+            this.uiLowThresholdLabel.Text = "Low Threshold TL";
             // 
-            // label1
+            // uiHighThresholdLabel
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(278, 243);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(97, 13);
-            this.label1.TabIndex = 65;
-            this.label1.Text = "High Threshold TH";
+            this.uiHighThresholdLabel.AutoSize = true;
+            this.uiHighThresholdLabel.Location = new System.Drawing.Point(278, 243);
+            this.uiHighThresholdLabel.Name = "uiHighThresholdLabel";
+            this.uiHighThresholdLabel.Size = new System.Drawing.Size(97, 13);
+            this.uiHighThresholdLabel.TabIndex = 65;
+            this.uiHighThresholdLabel.Text = "High Threshold TH";
             // 
-            // TxtTL
+            // uiLowThresholdTextBox
             // 
-            this.TxtTL.Location = new System.Drawing.Point(281, 298);
-            this.TxtTL.Name = "TxtTL";
-            this.TxtTL.Size = new System.Drawing.Size(41, 20);
-            this.TxtTL.TabIndex = 63;
-            this.TxtTL.Text = "10";
+            this.uiLowThresholdTextBox.Location = new System.Drawing.Point(281, 298);
+            this.uiLowThresholdTextBox.Name = "uiLowThresholdTextBox";
+            this.uiLowThresholdTextBox.Size = new System.Drawing.Size(41, 20);
+            this.uiLowThresholdTextBox.TabIndex = 63;
+            this.uiLowThresholdTextBox.Text = "10";
             // 
             // uiCalcButton
             // 
@@ -181,28 +185,48 @@
             this.uiCalcButton.UseVisualStyleBackColor = true;
             this.uiCalcButton.Click += new System.EventHandler(this.uiCalcButton_Click);
             // 
-            // TxtTH
+            // uiHighThresholdTextBox
             // 
-            this.TxtTH.Location = new System.Drawing.Point(281, 259);
-            this.TxtTH.Name = "TxtTH";
-            this.TxtTH.Size = new System.Drawing.Size(38, 20);
-            this.TxtTH.TabIndex = 62;
-            this.TxtTH.Text = "20";
+            this.uiHighThresholdTextBox.Location = new System.Drawing.Point(281, 259);
+            this.uiHighThresholdTextBox.Name = "uiHighThresholdTextBox";
+            this.uiHighThresholdTextBox.Size = new System.Drawing.Size(38, 20);
+            this.uiHighThresholdTextBox.TabIndex = 62;
+            this.uiHighThresholdTextBox.Text = "20";
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Location = new System.Drawing.Point(543, 41);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(256, 196);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox1.TabIndex = 71;
+            this.pictureBox1.TabStop = false;
+            // 
+            // pictureBox2
+            // 
+            this.pictureBox2.Location = new System.Drawing.Point(805, 41);
+            this.pictureBox2.Name = "pictureBox2";
+            this.pictureBox2.Size = new System.Drawing.Size(256, 196);
+            this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox2.TabIndex = 72;
+            this.pictureBox2.TabStop = false;
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(664, 492);
-            this.Controls.Add(this.label9);
-            this.Controls.Add(this.label10);
-            this.Controls.Add(this.TxtSigma);
-            this.Controls.Add(this.TxtGMask);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.TxtTL);
+            this.ClientSize = new System.Drawing.Size(1068, 492);
+            this.Controls.Add(this.pictureBox2);
+            this.Controls.Add(this.pictureBox1);
+            this.Controls.Add(this.uiSigmaLabel);
+            this.Controls.Add(this.uiGaussianMaskSizeLabel);
+            this.Controls.Add(this.uiSigmaTextBox);
+            this.Controls.Add(this.uiGaussianMaskSizeTextBox);
+            this.Controls.Add(this.uiLowThresholdLabel);
+            this.Controls.Add(this.uiHighThresholdLabel);
+            this.Controls.Add(this.uiLowThresholdTextBox);
             this.Controls.Add(this.uiCalcButton);
-            this.Controls.Add(this.TxtTH);
+            this.Controls.Add(this.uiHighThresholdTextBox);
             this.Controls.Add(this.uiFinalCannyPictureBox);
             this.Controls.Add(this.uiGaussianFilteredImagePictureBox);
             this.Controls.Add(this.label3);
@@ -216,6 +240,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.uiInputImagePictureBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.uiGaussianFilteredImagePictureBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.uiFinalCannyPictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -230,15 +256,17 @@
         private System.Windows.Forms.PictureBox uiInputImagePictureBox;
         private System.Windows.Forms.PictureBox uiGaussianFilteredImagePictureBox;
         private System.Windows.Forms.PictureBox uiFinalCannyPictureBox;
-        private System.Windows.Forms.Label label9;
-        private System.Windows.Forms.Label label10;
-        private System.Windows.Forms.TextBox TxtSigma;
-        private System.Windows.Forms.TextBox TxtGMask;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox TxtTL;
+        private System.Windows.Forms.Label uiSigmaLabel;
+        private System.Windows.Forms.Label uiGaussianMaskSizeLabel;
+        private System.Windows.Forms.TextBox uiSigmaTextBox;
+        private System.Windows.Forms.TextBox uiGaussianMaskSizeTextBox;
+        private System.Windows.Forms.Label uiLowThresholdLabel;
+        private System.Windows.Forms.Label uiHighThresholdLabel;
+        private System.Windows.Forms.TextBox uiLowThresholdTextBox;
         private System.Windows.Forms.Button uiCalcButton;
-        private System.Windows.Forms.TextBox TxtTH;
+        private System.Windows.Forms.TextBox uiHighThresholdTextBox;
+        private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.PictureBox pictureBox2;
     }
 }
 

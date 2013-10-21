@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Drawing.Imaging;
 using System.Drawing;
+using System.IO;
 
 namespace CannyProject
 {
@@ -10,15 +12,15 @@ namespace CannyProject
         public int[,] GreyImage;
 
         //Gaussian Kernel Data
-        int KernelSize = 5;
+        private int KernelSize = 5;
         float Sigma = 1;   // for N=2 Sigma =0.85  N=5 Sigma =1, N=9 Sigma = 2    2*Sigma = (int)N/2
         //Canny Edge Detection Parameters
-        float MaxHysteresisThresh, MinHysteresisThresh;
+        private float _maxHysteresisThresh, _minHysteresisThresh;
         public int[,] GaussianFilterImage;
         public float[,] Gradient;
         public float[,] NonMax;
         public int[,] PostHysteresis;
-        int[,] EdgePoints;
+        private int[,] _edgePoints;
         public float[,] GNH;
         public float[,] GNL;
         public int[,] EdgeMap;
@@ -45,8 +47,8 @@ namespace CannyProject
 
         private void SetGaussianAndCannyParameters(Bitmap inputImage, float maxHysteresisThresh, float minHysteresisThresh)
         {
-            MaxHysteresisThresh = maxHysteresisThresh;
-            MinHysteresisThresh = minHysteresisThresh;
+            _maxHysteresisThresh = maxHysteresisThresh;
+            _minHysteresisThresh = minHysteresisThresh;
             ObjInputImage = inputImage;
             EdgeMap = new int[ObjInputImage.Width, ObjInputImage.Height];
             VisitedMap = new int[ObjInputImage.Width, ObjInputImage.Height];
@@ -62,6 +64,37 @@ namespace CannyProject
         }
 
         private Bitmap GetDisplayedImage(int[,] greyImage, int width, int height)
+        {
+            var image = new Bitmap(width, height);
+            BitmapData bitmapData1 = image.LockBits(new Rectangle(0, 0, width, height),
+                                     ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
+            unsafe
+            {
+                var imagePointer1 = (byte*)bitmapData1.Scan0;
+                for (var i = 0; i < bitmapData1.Height; i++)
+                {
+                    for (var j = 0; j < bitmapData1.Width; j++)
+                    {
+                        imagePointer1[0] = (byte)greyImage[j, i];
+                        imagePointer1[1] = (byte)greyImage[j, i];
+                        imagePointer1[2] = (byte)greyImage[j, i];
+                        imagePointer1[3] = 255;
+                        imagePointer1 += 4;
+                    }
+                    imagePointer1 += (bitmapData1.Stride - (bitmapData1.Width * 4));
+                }
+            }
+            image.UnlockBits(bitmapData1);
+            return image;
+        }
+        public Bitmap GetDisplayedImage(float[,] greyImage)
+        {
+            int width = greyImage.GetLength(0);
+            int height = greyImage.GetLength(1);
+            return GetDisplayedImage(greyImage, width, height);
+        }
+
+        private Bitmap GetDisplayedImage(float[,] greyImage, int width, int height)
         {
             var image = new Bitmap(width, height);
             BitmapData bitmapData1 = image.LockBits(new Rectangle(0, 0, width, height),
@@ -121,14 +154,12 @@ namespace CannyProject
 
             int limit = KernelSize / 2;
 
-
             for (var i = limit; i <= (ObjInputImage.Width - limit) - 1; i++)
             {
                 for (var j = limit; j <= (ObjInputImage.Height - limit) - 1; j++)
                 {
                     float tangent = derivativeX[i, j] == 0 ? 90F
                                         : (float)(Math.Atan(derivativeY[i, j] / derivativeX[i, j]) * 180 / Math.PI); //сомнительная херня, увеличивает производительность?
-
 
                     //Horizontal Edge
                     if (((-22.5 < tangent) && (tangent <= 22.5)) || ((157.5 < tangent) && (tangent <= -157.5)))
@@ -158,17 +189,14 @@ namespace CannyProject
                         if ((Gradient[i, j] < Gradient[i + 1, j + 1]) || (Gradient[i, j] < Gradient[i - 1, j - 1]))
                             NonMax[i, j] = 0;
                     }
-
                 }
             }
-
 
             //PostHysteresis = NonMax;
             for (var r = limit; r <= (ObjInputImage.Width - limit) - 1; r++)
             {
                 for (var c = limit; c <= (ObjInputImage.Height - limit) - 1; c++)
                 {
-
                     PostHysteresis[r, c] = (int)NonMax[r, c];
                 }
 
@@ -195,31 +223,27 @@ namespace CannyProject
 
             GNH = new float[ObjInputImage.Width, ObjInputImage.Height];
             GNL = new float[ObjInputImage.Width, ObjInputImage.Height];
-            EdgePoints = new int[ObjInputImage.Width, ObjInputImage.Height];
+            _edgePoints = new int[ObjInputImage.Width, ObjInputImage.Height];
 
             for (var r = limit; r <= (ObjInputImage.Width - limit) - 1; r++)
             {
                 for (var c = limit; c <= (ObjInputImage.Height - limit) - 1; c++)
                 {
-                    if (PostHysteresis[r, c] >= MaxHysteresisThresh)
+                    if (PostHysteresis[r, c] >= _maxHysteresisThresh)
                     {
-
-                        EdgePoints[r, c] = 1;
+                        _edgePoints[r, c] = 1;
                         GNH[r, c] = 255;
                     }
-                    if ((PostHysteresis[r, c] < MaxHysteresisThresh) && (PostHysteresis[r, c] >= MinHysteresisThresh))
+                    if ((PostHysteresis[r, c] < _maxHysteresisThresh) && (PostHysteresis[r, c] >= _minHysteresisThresh))
                     {
 
-                        EdgePoints[r, c] = 2;
+                        _edgePoints[r, c] = 2;
                         GNL[r, c] = 255;
-
                     }
-
                 }
-
             }
 
-            HysterisisThresholding(EdgePoints);
+            HysterisisThresholding(_edgePoints);
 
             for (var i = 0; i <= (ObjInputImage.Width - 1); i++)
             {
@@ -259,26 +283,22 @@ namespace CannyProject
         {
             float pi;
             pi = (float)Math.PI;
-            int SizeofKernel = kernelSize;
 
-            float[,] Kernel = new float[kernelSize, kernelSize];
+            var kernel = new float[kernelSize, kernelSize];
             var gaussianKernel = new int[kernelSize, kernelSize];
-            float[,] OP = new float[kernelSize, kernelSize];
-            float D1, D2;
 
-
-            D1 = 1 / (2 * pi * sigma * sigma);
-            D2 = 2 * sigma * sigma;
+            float d1 = 1 / (2 * pi * sigma * sigma);
+            float d2 = 2 * sigma * sigma;
 
             float min = 1000;
 
-            for (var i = -SizeofKernel / 2; i < SizeofKernel / 2; i++)
+            for (var i = -kernelSize / 2; i < kernelSize / 2; i++)
             {
-                for (var j = -SizeofKernel / 2; j < SizeofKernel / 2; j++)
+                for (var j = -kernelSize / 2; j < kernelSize / 2; j++)
                 {
-                    Kernel[SizeofKernel / 2 + i, SizeofKernel / 2 + j] = ((1 / D1) * (float)Math.Exp(-(i * i + j * j) / D2));
-                    if (Kernel[SizeofKernel / 2 + i, SizeofKernel / 2 + j] < min)
-                        min = Kernel[SizeofKernel / 2 + i, SizeofKernel / 2 + j];
+                    kernel[kernelSize / 2 + i, kernelSize / 2 + j] = ((1 / d1) * (float)Math.Exp(-(i * i + j * j) / d2));
+                    if (kernel[kernelSize / 2 + i, kernelSize / 2 + j] < min)
+                        min = kernel[kernelSize / 2 + i, kernelSize / 2 + j];
 
                 }
             }
@@ -286,33 +306,28 @@ namespace CannyProject
             int sum = 0;
             if ((min > 0) && (min < 1))
             {
-
-                for (var i = -SizeofKernel / 2; i < SizeofKernel / 2; i++)
+                for (var i = -kernelSize / 2; i < kernelSize / 2; i++)
                 {
-                    for (var j = -SizeofKernel / 2; j < SizeofKernel / 2; j++)
+                    for (var j = -kernelSize / 2; j < kernelSize / 2; j++)
                     {
-                        Kernel[SizeofKernel / 2 + i, SizeofKernel / 2 + j] = (float)Math.Round(Kernel[SizeofKernel / 2 + i, SizeofKernel / 2 + j] * mult, 0);
-                        gaussianKernel[SizeofKernel / 2 + i, SizeofKernel / 2 + j] = (int)Kernel[SizeofKernel / 2 + i, SizeofKernel / 2 + j];
-                        sum = sum + gaussianKernel[SizeofKernel / 2 + i, SizeofKernel / 2 + j];
+                        kernel[kernelSize / 2 + i, kernelSize / 2 + j] = (float)Math.Round(kernel[kernelSize / 2 + i, kernelSize / 2 + j] * mult, 0);
+                        gaussianKernel[kernelSize / 2 + i, kernelSize / 2 + j] = (int)kernel[kernelSize / 2 + i, kernelSize / 2 + j];
+                        sum = sum + gaussianKernel[kernelSize / 2 + i, kernelSize / 2 + j];
                     }
-
                 }
-
             }
             else
             {
                 sum = 0;
-                for (var i = -SizeofKernel / 2; i < SizeofKernel / 2; i++)
+                for (var i = -kernelSize / 2; i < kernelSize / 2; i++)
                 {
-                    for (var j = -SizeofKernel / 2; j < SizeofKernel / 2; j++)
+                    for (var j = -kernelSize / 2; j < kernelSize / 2; j++)
                     {
-                        Kernel[SizeofKernel / 2 + i, SizeofKernel / 2 + j] = (float)Math.Round(Kernel[SizeofKernel / 2 + i, SizeofKernel / 2 + j], 0);
-                        gaussianKernel[SizeofKernel / 2 + i, SizeofKernel / 2 + j] = (int)Kernel[SizeofKernel / 2 + i, SizeofKernel / 2 + j];
-                        sum = sum + gaussianKernel[SizeofKernel / 2 + i, SizeofKernel / 2 + j];
+                        kernel[kernelSize / 2 + i, kernelSize / 2 + j] = (float)Math.Round(kernel[kernelSize / 2 + i, kernelSize / 2 + j], 0);
+                        gaussianKernel[kernelSize / 2 + i, kernelSize / 2 + j] = (int)kernel[kernelSize / 2 + i, kernelSize / 2 + j];
+                        sum = sum + gaussianKernel[kernelSize / 2 + i, kernelSize / 2 + j];
                     }
-
                 }
-
             }
             //Normalizing kernel Weight
             Weight = sum;
@@ -325,7 +340,7 @@ namespace CannyProject
             int[,] sobelMasksDx =
                 {
                     {1, 0, -1},
-                    {1, 0, -1},
+                    {2, 0, -2},
                     {1, 0, -1}
                 };
             return Differentiate(gaussianFilterImage, sobelMasksDx);
@@ -335,9 +350,9 @@ namespace CannyProject
         {
             int[,] sobelMasksDy =
                 {
-                    {1, 1, 1},
+                    {1, 2, 1},
                     {0, 0, 0},
-                    {-1, -1, -1}
+                    {-1, -2, -1}
                 };
             return Differentiate(gaussianFilterImage, sobelMasksDy);
         }
@@ -432,7 +447,7 @@ namespace CannyProject
             }
 
             //1
-            if (EdgePoints[X + 1, Y] == 2)
+            if (_edgePoints[X + 1, Y] == 2)
             {
                 EdgeMap[X + 1, Y] = 1;
                 VisitedMap[X + 1, Y] = 1;
@@ -440,7 +455,7 @@ namespace CannyProject
                 return;
             }
             //2
-            if (EdgePoints[X + 1, Y - 1] == 2)
+            if (_edgePoints[X + 1, Y - 1] == 2)
             {
                 EdgeMap[X + 1, Y - 1] = 1;
                 VisitedMap[X + 1, Y - 1] = 1;
@@ -450,7 +465,7 @@ namespace CannyProject
 
             //3
 
-            if (EdgePoints[X, Y - 1] == 2)
+            if (_edgePoints[X, Y - 1] == 2)
             {
                 EdgeMap[X, Y - 1] = 1;
                 VisitedMap[X, Y - 1] = 1;
@@ -460,7 +475,7 @@ namespace CannyProject
 
             //4
 
-            if (EdgePoints[X - 1, Y - 1] == 2)
+            if (_edgePoints[X - 1, Y - 1] == 2)
             {
                 EdgeMap[X - 1, Y - 1] = 1;
                 VisitedMap[X - 1, Y - 1] = 1;
@@ -468,7 +483,7 @@ namespace CannyProject
                 return;
             }
             //5
-            if (EdgePoints[X - 1, Y] == 2)
+            if (_edgePoints[X - 1, Y] == 2)
             {
                 EdgeMap[X - 1, Y] = 1;
                 VisitedMap[X - 1, Y] = 1;
@@ -476,7 +491,7 @@ namespace CannyProject
                 return;
             }
             //6
-            if (EdgePoints[X - 1, Y + 1] == 2)
+            if (_edgePoints[X - 1, Y + 1] == 2)
             {
                 EdgeMap[X - 1, Y + 1] = 1;
                 VisitedMap[X - 1, Y + 1] = 1;
@@ -484,7 +499,7 @@ namespace CannyProject
                 return;
             }
             //7
-            if (EdgePoints[X, Y + 1] == 2)
+            if (_edgePoints[X, Y + 1] == 2)
             {
                 EdgeMap[X, Y + 1] = 1;
                 VisitedMap[X, Y + 1] = 1;
@@ -493,7 +508,7 @@ namespace CannyProject
             }
             //8
 
-            if (EdgePoints[X + 1, Y + 1] == 2)
+            if (_edgePoints[X + 1, Y + 1] == 2)
             {
                 EdgeMap[X + 1, Y + 1] = 1;
                 VisitedMap[X + 1, Y + 1] = 1;

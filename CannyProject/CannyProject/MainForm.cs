@@ -49,15 +49,17 @@ namespace CannyProject
 
         private void Calculate()
         {
-            var TH = (float)Convert.ToDouble(TxtTH.Text);
-            var TL = (float)Convert.ToDouble(TxtTL.Text);
+            var TH = (float)Convert.ToDouble(uiHighThresholdTextBox.Text);
+            var TL = (float)Convert.ToDouble(uiLowThresholdTextBox.Text);
 
-            var MaskSize = Convert.ToInt32(TxtGMask.Text);
-            var Sigma = (float)Convert.ToDouble(TxtSigma.Text);
+            var MaskSize = Convert.ToInt32(uiGaussianMaskSizeTextBox.Text);
+            var Sigma = (float)Convert.ToDouble(uiSigmaTextBox.Text);
             var CannyData = new Canny((Bitmap)uiInputImagePictureBox.Image, TH, TL, MaskSize, Sigma);
             uiGaussianFilteredImagePictureBox.Image = CannyData.GetDisplayedImage(CannyData.GaussianFilterImage);
 
             uiFinalCannyPictureBox.Image = CannyData.GetDisplayedImage(CannyData.EdgeMap);
+            pictureBox1.Image = CannyData.GetDisplayedImage(CannyData.GNH);
+            pictureBox2.Image = CannyData.GetDisplayedImage(CannyData.GNL);
 
         }
 
