@@ -49,18 +49,17 @@ namespace CannyProject
 
         private void Calculate()
         {
-            var TH = (float)Convert.ToDouble(uiHighThresholdTextBox.Text);
-            var TL = (float)Convert.ToDouble(uiLowThresholdTextBox.Text);
-
-            var MaskSize = Convert.ToInt32(uiGaussianMaskSizeTextBox.Text);
-            var Sigma = (float)Convert.ToDouble(uiSigmaTextBox.Text);
-            var CannyData = new Canny((Bitmap)uiInputImagePictureBox.Image, TH, TL, MaskSize, Sigma);
-            uiGaussianFilteredImagePictureBox.Image = CannyData.GetDisplayedImage(CannyData.GaussianFilterImage);
-
-            uiFinalCannyPictureBox.Image = CannyData.GetDisplayedImage(CannyData.EdgeMap);
-            pictureBox1.Image = CannyData.GetDisplayedImage(CannyData.GNH);
-            pictureBox2.Image = CannyData.GetDisplayedImage(CannyData.GNL);
-
+            var th = (float)Convert.ToDouble(uiHighThresholdTextBox.Text);
+            var tl = (float)Convert.ToDouble(uiLowThresholdTextBox.Text);
+            var maskSize = Convert.ToInt32(uiGaussianMaskSizeTextBox.Text);
+            var sigma = (float)Convert.ToDouble(uiSigmaTextBox.Text);
+            var shift = (float)Convert.ToDouble(uiShiftTextBox.Text);
+            var shiftSize = (int)Convert.ToDouble(uiShiftSizeTextBox.Text);
+            var cannyData = new Canny((Bitmap)uiInputImagePictureBox.Image, th, tl, maskSize, sigma, shift, shiftSize);
+            uiGaussianFilteredImagePictureBox.Image = cannyData.GetDisplayedImage(cannyData.GaussianFilterImage);
+            uiFinalCannyPictureBox.Image = cannyData.GetDisplayedImage(cannyData.EdgeMap);
+            uiGnhPictureBox.Image = cannyData.GetDisplayedImage(cannyData.GNH);
+            uiGnlPictureBox.Image = cannyData.GetDisplayedImage(cannyData.GNL);
         }
 
         private void uiCalcButton_Click(object sender, EventArgs e)

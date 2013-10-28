@@ -45,14 +45,18 @@
             this.uiLowThresholdTextBox = new System.Windows.Forms.TextBox();
             this.uiCalcButton = new System.Windows.Forms.Button();
             this.uiHighThresholdTextBox = new System.Windows.Forms.TextBox();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.pictureBox2 = new System.Windows.Forms.PictureBox();
+            this.uiGnhPictureBox = new System.Windows.Forms.PictureBox();
+            this.uiGnlPictureBox = new System.Windows.Forms.PictureBox();
+            this.uiShiftLabel = new System.Windows.Forms.Label();
+            this.uiShiftTextBox = new System.Windows.Forms.TextBox();
+            this.uiShiftSizeLabel = new System.Windows.Forms.Label();
+            this.uiShiftSizeTextBox = new System.Windows.Forms.TextBox();
             this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.uiInputImagePictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.uiGaussianFilteredImagePictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.uiFinalCannyPictureBox)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.uiGnhPictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.uiGnlPictureBox)).BeginInit();
             this.SuspendLayout();
             // 
             // toolStrip1
@@ -195,29 +199,67 @@
             // 
             // pictureBox1
             // 
-            this.pictureBox1.Location = new System.Drawing.Point(543, 41);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(256, 196);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.pictureBox1.TabIndex = 71;
-            this.pictureBox1.TabStop = false;
+            this.uiGnhPictureBox.Location = new System.Drawing.Point(543, 41);
+            this.uiGnhPictureBox.Name = "uiGnhPictureBox";
+            this.uiGnhPictureBox.Size = new System.Drawing.Size(256, 196);
+            this.uiGnhPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.uiGnhPictureBox.TabIndex = 71;
+            this.uiGnhPictureBox.TabStop = false;
             // 
             // pictureBox2
             // 
-            this.pictureBox2.Location = new System.Drawing.Point(805, 41);
-            this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(256, 196);
-            this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.pictureBox2.TabIndex = 72;
-            this.pictureBox2.TabStop = false;
+            this.uiGnlPictureBox.Location = new System.Drawing.Point(805, 41);
+            this.uiGnlPictureBox.Name = "uiGnlPictureBox";
+            this.uiGnlPictureBox.Size = new System.Drawing.Size(256, 196);
+            this.uiGnlPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.uiGnlPictureBox.TabIndex = 72;
+            this.uiGnlPictureBox.TabStop = false;
+            // 
+            // uiShiftLabel
+            // 
+            this.uiShiftLabel.AutoSize = true;
+            this.uiShiftLabel.Location = new System.Drawing.Point(399, 360);
+            this.uiShiftLabel.Name = "uiShiftLabel";
+            this.uiShiftLabel.Size = new System.Drawing.Size(26, 13);
+            this.uiShiftLabel.TabIndex = 74;
+            this.uiShiftLabel.Text = "shift";
+            // 
+            // uiShiftTextBox
+            // 
+            this.uiShiftTextBox.Location = new System.Drawing.Point(402, 376);
+            this.uiShiftTextBox.Name = "uiShiftTextBox";
+            this.uiShiftTextBox.Size = new System.Drawing.Size(41, 20);
+            this.uiShiftTextBox.TabIndex = 73;
+            this.uiShiftTextBox.Text = "10";
+            // 
+            // uiShiftSizeLabel
+            // 
+            this.uiShiftSizeLabel.AutoSize = true;
+            this.uiShiftSizeLabel.Location = new System.Drawing.Point(463, 360);
+            this.uiShiftSizeLabel.Name = "uiShiftSizeLabel";
+            this.uiShiftSizeLabel.Size = new System.Drawing.Size(47, 13);
+            this.uiShiftSizeLabel.TabIndex = 76;
+            this.uiShiftSizeLabel.Text = "shift size";
+            // 
+            // uiShiftSizeTextBox
+            // 
+            this.uiShiftSizeTextBox.Location = new System.Drawing.Point(466, 376);
+            this.uiShiftSizeTextBox.Name = "uiShiftSizeTextBox";
+            this.uiShiftSizeTextBox.Size = new System.Drawing.Size(41, 20);
+            this.uiShiftSizeTextBox.TabIndex = 75;
+            this.uiShiftSizeTextBox.Text = "3";
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1068, 492);
-            this.Controls.Add(this.pictureBox2);
-            this.Controls.Add(this.pictureBox1);
+            this.Controls.Add(this.uiShiftSizeLabel);
+            this.Controls.Add(this.uiShiftSizeTextBox);
+            this.Controls.Add(this.uiShiftLabel);
+            this.Controls.Add(this.uiShiftTextBox);
+            this.Controls.Add(this.uiGnlPictureBox);
+            this.Controls.Add(this.uiGnhPictureBox);
             this.Controls.Add(this.uiSigmaLabel);
             this.Controls.Add(this.uiGaussianMaskSizeLabel);
             this.Controls.Add(this.uiSigmaTextBox);
@@ -240,8 +282,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.uiInputImagePictureBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.uiGaussianFilteredImagePictureBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.uiFinalCannyPictureBox)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.uiGnhPictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.uiGnlPictureBox)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -265,8 +307,12 @@
         private System.Windows.Forms.TextBox uiLowThresholdTextBox;
         private System.Windows.Forms.Button uiCalcButton;
         private System.Windows.Forms.TextBox uiHighThresholdTextBox;
-        private System.Windows.Forms.PictureBox pictureBox1;
-        private System.Windows.Forms.PictureBox pictureBox2;
+        private System.Windows.Forms.PictureBox uiGnhPictureBox;
+        private System.Windows.Forms.PictureBox uiGnlPictureBox;
+        private System.Windows.Forms.Label uiShiftLabel;
+        private System.Windows.Forms.TextBox uiShiftTextBox;
+        private System.Windows.Forms.Label uiShiftSizeLabel;
+        private System.Windows.Forms.TextBox uiShiftSizeTextBox;
     }
 }
 

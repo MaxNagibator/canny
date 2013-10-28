@@ -12,8 +12,8 @@ namespace CannyProject
         public int[,] GreyImage;
 
         //Gaussian Kernel Data
-        private int KernelSize = 5;
-        float Sigma = 1;   // for N=2 Sigma =0.85  N=5 Sigma =1, N=9 Sigma = 2    2*Sigma = (int)N/2
+        private readonly int _kernelSize = 5;
+        private readonly float _sigma = 1;   // for N=2 Sigma =0.85  N=5 Sigma =1, N=9 Sigma = 2    2*Sigma = (int)N/2
         //Canny Edge Detection Parameters
         private float _maxHysteresisThresh, _minHysteresisThresh;
         public int[,] GaussianFilterImage;
@@ -25,6 +25,8 @@ namespace CannyProject
         public float[,] GNL;
         public int[,] EdgeMap;
         public int[,] VisitedMap;
+        private int _shiftSize;
+        private float _shift;
 
         public Canny(Bitmap inputImage)
         {
@@ -38,10 +40,12 @@ namespace CannyProject
             SetGaussianAndCannyParameters(inputImage, maxHysteresisThresh, minHysteresisThresh);
         }
 
-        public Canny(Bitmap inputImage, float maxHysteresisThresh, float minHysteresisThresh, int gaussianMaskSize, float sigmaforGaussianKernel)
+        public Canny(Bitmap inputImage, float maxHysteresisThresh, float minHysteresisThresh, int gaussianMaskSize, float sigmaforGaussianKernel, float shift, int shiftSize)
         {
-            KernelSize = gaussianMaskSize;
-            Sigma = sigmaforGaussianKernel;
+            _shift = shift;
+            _shiftSize = shiftSize;
+            _kernelSize = gaussianMaskSize;
+            _sigma = sigmaforGaussianKernel;
             SetGaussianAndCannyParameters(inputImage, maxHysteresisThresh, minHysteresisThresh);
         }
 
@@ -152,7 +156,7 @@ namespace CannyProject
             NonMax = PerformNonMaximumSuppression(Gradient);
 
 
-            int limit = KernelSize / 2;
+            int limit = _kernelSize / 2;
 
             for (var i = limit; i <= (ObjInputImage.Width - limit) - 1; i++)
             {
@@ -203,7 +207,7 @@ namespace CannyProject
             }
 
             //Find Max and Min in Post Hysterisis
-            float min = 100;
+            float min = 999;
             float max = 0;
             for (var r = limit; r <= (ObjInputImage.Width - limit) - 1; r++)
             {
@@ -225,20 +229,19 @@ namespace CannyProject
             GNL = new float[ObjInputImage.Width, ObjInputImage.Height];
             _edgePoints = new int[ObjInputImage.Width, ObjInputImage.Height];
 
-            for (var r = limit; r <= (ObjInputImage.Width - limit) - 1; r++)
+            for (var i = limit; i <= (ObjInputImage.Width - limit) - 1; i++)
             {
-                for (var c = limit; c <= (ObjInputImage.Height - limit) - 1; c++)
+                for (var j = limit; j <= (ObjInputImage.Height - limit) - 1; j++)
                 {
-                    if (PostHysteresis[r, c] >= _maxHysteresisThresh)
+                    if (PostHysteresis[i, j] >= _maxHysteresisThresh)
                     {
-                        _edgePoints[r, c] = 1;
-                        GNH[r, c] = 255;
+                        _edgePoints[i, j] = 1;
+                        GNH[i, j] = 255;
                     }
-                    if ((PostHysteresis[r, c] < _maxHysteresisThresh) && (PostHysteresis[r, c] >= _minHysteresisThresh))
+                    if ((PostHysteresis[i, j] < _maxHysteresisThresh) && (PostHysteresis[i, j] >= _minHysteresisThresh))
                     {
-
-                        _edgePoints[r, c] = 2;
-                        GNL[r, c] = 255;
+                        _edgePoints[i, j] = 2;
+                        GNL[i, j] = 255;
                     }
                 }
             }
@@ -257,8 +260,8 @@ namespace CannyProject
         private int[,] GetGaussianFilterImage(int[,] data)
         {
             int kernelWeight;
-            var gaussianKernel = GetGaussianKernel(KernelSize, Sigma, out kernelWeight);
-            int limit = KernelSize / 2;
+            var gaussianKernel = GetGaussianKernel(_kernelSize, _sigma, out kernelWeight);
+            int limit = _kernelSize / 2;
             int[,] output = data;
 
             for (var i = limit; i <= ((ObjInputImage.Width - 1) - limit); i++)
@@ -408,27 +411,33 @@ namespace CannyProject
             return nonMax;
         }
 
-        private void HysterisisThresholding(int[,] Edges)
+        private void HysterisisThresholding(int[,] edges)
         {
-            int Limit = KernelSize / 2;
-
-
-            for (var i = Limit; i <= (ObjInputImage.Width - 1) - Limit; i++)
+            int limit = _kernelSize / 2;
+            var a = "";
+            for (var i = limit; i <= (ObjInputImage.Width - 1) - limit; i++)
             {
-                for (var j = Limit; j <= (ObjInputImage.Height - 1) - Limit; j++)
+                for (var j = limit; j <= (ObjInputImage.Height - 1) - limit; j++)
                 {
-                    if (Edges[i, j] == 1)
-                    {
-                        EdgeMap[i, j] = 1;
-                    }
+                    a += edges[i, j] + "";
+                    //if (edges[i, j] == 1)
+                    //{
+                    //    EdgeMap[i, j] = 1;
+                    //}
                 }
+                a += "\n";
             }
 
-            for (var i = Limit; i <= (ObjInputImage.Width - 1) - Limit; i++)
+            using (StreamWriter s = new StreamWriter("test.txt"))
             {
-                for (var j = Limit; j <= (ObjInputImage.Height - 1) - Limit; j++)
+                s.Write(a);
+                Process.Start("test.txt");
+            }
+            for (var i = limit; i <= (ObjInputImage.Width - 1) - limit; i++)
+            {
+                for (var j = limit; j <= (ObjInputImage.Height - 1) - limit; j++)
                 {
-                    if (Edges[i, j] == 1)
+                    if (edges[i, j] == 1)
                     {
                         EdgeMap[i, j] = 1;
                         Travers(i, j);
@@ -436,6 +445,26 @@ namespace CannyProject
                     }
                 }
             }
+
+            a = "";
+            for (var i = limit; i <= (ObjInputImage.Width - 1) - limit; i++)
+            {
+                for (var j = limit; j <= (ObjInputImage.Height - 1) - limit; j++)
+                {
+                    a += EdgeMap[i, j] + "";
+                    //if (edges[i, j] == 1)
+                    //{
+                    //    EdgeMap[i, j] = 1;
+                    //}
+                }
+                a += "\n";
+            }
+            using (StreamWriter s = new StreamWriter("test2.txt"))
+            {
+                s.Write(a);
+                Process.Start("test2.txt");
+            }
+
         }
 
         private void Travers(int X, int Y)
