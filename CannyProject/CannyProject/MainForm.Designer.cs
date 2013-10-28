@@ -197,7 +197,7 @@
             this.uiHighThresholdTextBox.TabIndex = 62;
             this.uiHighThresholdTextBox.Text = "20";
             // 
-            // pictureBox1
+            // uiGnhPictureBox
             // 
             this.uiGnhPictureBox.Location = new System.Drawing.Point(543, 41);
             this.uiGnhPictureBox.Name = "uiGnhPictureBox";
@@ -206,7 +206,7 @@
             this.uiGnhPictureBox.TabIndex = 71;
             this.uiGnhPictureBox.TabStop = false;
             // 
-            // pictureBox2
+            // uiGnlPictureBox
             // 
             this.uiGnlPictureBox.Location = new System.Drawing.Point(805, 41);
             this.uiGnlPictureBox.Name = "uiGnlPictureBox";
@@ -230,7 +230,7 @@
             this.uiShiftTextBox.Name = "uiShiftTextBox";
             this.uiShiftTextBox.Size = new System.Drawing.Size(41, 20);
             this.uiShiftTextBox.TabIndex = 73;
-            this.uiShiftTextBox.Text = "10";
+            this.uiShiftTextBox.Text = "30";
             // 
             // uiShiftSizeLabel
             // 

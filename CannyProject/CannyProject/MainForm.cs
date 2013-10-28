@@ -43,7 +43,7 @@ namespace CannyProject
 
         private void ForLightDevelop()
         {
-            var imagePath = "D:\\мои документы\\Visual Studio 2012\\Projects\\Diplom ^_^\\canny\\Images\\x_e7da9276.jpg";
+            var imagePath = "D:\\мои документы\\Visual Studio 2012\\Projects\\Diplom\\canny\\Images\\x_e7da9276.jpg";
             uiInputImagePictureBox.Image = Image.FromFile(imagePath);
         }
 
