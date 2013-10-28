@@ -229,7 +229,7 @@ namespace CannyProject
 
                     var topBorder = (j - _shiftSize) < 0 ? 0 : (j - _shiftSize);
 
-                    var downBorder = (i + _shiftSize) > ObjInputImage.Height - 1 ? ObjInputImage.Height - 1 : (i + _shiftSize);
+                    var downBorder = (j + _shiftSize) > ObjInputImage.Height - 1 ? ObjInputImage.Height - 1 : (j + _shiftSize);
 
                     for (var a = leftBorder; a <= rightBorder; a++)
                     {
@@ -237,13 +237,13 @@ namespace CannyProject
                         {
                             if (a !=i && b != j)
                             {
-                                sum += PostHysteresis[a, b];
+                                sum += Gradient[a, b];
                                 count++;
                             }
                         }
                     }
                     var average = sum/count;
-                    var bonus = average/PostHysteresis[i, j]*_shift/100;
+                    var bonus = average / Gradient[i, j] * _shift / 100;
 
                     if (PostHysteresis[i, j] >= _maxHysteresisThresh + bonus)
                     {
