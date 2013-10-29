@@ -243,14 +243,14 @@ namespace CannyProject
                         }
                     }
                     var average = sum/count;
-                    var bonus = average / Gradient[i, j] * _shift / 100;
+                    var bonus = Gradient[i, j] / average * _shift / 100;
 
                     if (PostHysteresis[i, j] >= _maxHysteresisThresh + bonus)
                     {
                         _edgePoints[i, j] = 1;
                         GNH[i, j] = 255;
                     }
-                    if ((PostHysteresis[i, j] < _maxHysteresisThresh + bonus) && (PostHysteresis[i, j] >= _minHysteresisThresh + bonus))
+                    if ((PostHysteresis[i, j] < _maxHysteresisThresh + bonus) && (PostHysteresis[i, j] >= _minHysteresisThresh))
                     {
                         _edgePoints[i, j] = 2;
                         GNL[i, j] = 255;
