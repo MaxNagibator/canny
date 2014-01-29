@@ -51,6 +51,10 @@
             this.uiShiftTextBox = new System.Windows.Forms.TextBox();
             this.uiShiftSizeLabel = new System.Windows.Forms.Label();
             this.uiShiftSizeTextBox = new System.Windows.Forms.TextBox();
+            this.uiShift2SizeLabel = new System.Windows.Forms.Label();
+            this.uiShift2SizeTextBox = new System.Windows.Forms.TextBox();
+            this.uiShift2Label = new System.Windows.Forms.Label();
+            this.uiShift2TextBox = new System.Windows.Forms.TextBox();
             this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.uiInputImagePictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.uiGaussianFilteredImagePictureBox)).BeginInit();
@@ -249,11 +253,49 @@
             this.uiShiftSizeTextBox.TabIndex = 75;
             this.uiShiftSizeTextBox.Text = "3";
             // 
+            // uiShift2SizeLabel
+            // 
+            this.uiShift2SizeLabel.AutoSize = true;
+            this.uiShift2SizeLabel.Location = new System.Drawing.Point(540, 298);
+            this.uiShift2SizeLabel.Name = "uiShift2SizeLabel";
+            this.uiShift2SizeLabel.Size = new System.Drawing.Size(47, 13);
+            this.uiShift2SizeLabel.TabIndex = 80;
+            this.uiShift2SizeLabel.Text = "shift size";
+            // 
+            // uiShift2SizeTextBox
+            // 
+            this.uiShift2SizeTextBox.Location = new System.Drawing.Point(543, 314);
+            this.uiShift2SizeTextBox.Name = "uiShift2SizeTextBox";
+            this.uiShift2SizeTextBox.Size = new System.Drawing.Size(41, 20);
+            this.uiShift2SizeTextBox.TabIndex = 79;
+            this.uiShift2SizeTextBox.Text = "3";
+            // 
+            // uiShift2Label
+            // 
+            this.uiShift2Label.AutoSize = true;
+            this.uiShift2Label.Location = new System.Drawing.Point(476, 298);
+            this.uiShift2Label.Name = "uiShift2Label";
+            this.uiShift2Label.Size = new System.Drawing.Size(26, 13);
+            this.uiShift2Label.TabIndex = 78;
+            this.uiShift2Label.Text = "shift";
+            // 
+            // uiShift2TextBox
+            // 
+            this.uiShift2TextBox.Location = new System.Drawing.Point(479, 314);
+            this.uiShift2TextBox.Name = "uiShift2TextBox";
+            this.uiShift2TextBox.Size = new System.Drawing.Size(41, 20);
+            this.uiShift2TextBox.TabIndex = 77;
+            this.uiShift2TextBox.Text = "30";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1068, 492);
+            this.Controls.Add(this.uiShift2SizeLabel);
+            this.Controls.Add(this.uiShift2SizeTextBox);
+            this.Controls.Add(this.uiShift2Label);
+            this.Controls.Add(this.uiShift2TextBox);
             this.Controls.Add(this.uiShiftSizeLabel);
             this.Controls.Add(this.uiShiftSizeTextBox);
             this.Controls.Add(this.uiShiftLabel);
@@ -313,6 +355,10 @@
         private System.Windows.Forms.TextBox uiShiftTextBox;
         private System.Windows.Forms.Label uiShiftSizeLabel;
         private System.Windows.Forms.TextBox uiShiftSizeTextBox;
+        private System.Windows.Forms.Label uiShift2SizeLabel;
+        private System.Windows.Forms.TextBox uiShift2SizeTextBox;
+        private System.Windows.Forms.Label uiShift2Label;
+        private System.Windows.Forms.TextBox uiShift2TextBox;
     }
 }
 
