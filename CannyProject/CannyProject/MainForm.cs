@@ -62,8 +62,12 @@ namespace CannyProject
                 var sigma = (float) Convert.ToDouble(uiSigmaTextBox.Text);
                 var shift = Convert.ToInt32(uiShiftTextBox.Text);
                 var size = (int) Convert.ToDouble(uiSizeTextBox.Text);
+                var koefficient1 = (float)Convert.ToDouble(uiKoefficient1TextBox.Text);
+                var koefficient2 = (float)Convert.ToDouble(uiKoefficient2TextBox.Text);
+                var koefficient3 = (float)Convert.ToDouble(uiKoefficient3TextBox.Text);
                 uiInputImagePictureBox.Image = Image.FromFile(fileName);
-                var cannyData = new Canny((Bitmap) uiInputImagePictureBox.Image, th, tl, maskSize, sigma, shift, size);
+                var cannyData = new Canny((Bitmap) uiInputImagePictureBox.Image, th, tl, maskSize, sigma, shift, size,
+                    koefficient1,koefficient2,koefficient3);
                 uiGaussianFilteredImagePictureBox.Image = cannyData.GetDisplayedImage(cannyData.GaussianFilterImage);
                 uiFinalCannyPictureBox.Image = cannyData.GetDisplayedImage(cannyData.EdgeMap);
                 uiGnhPictureBox.Image = cannyData.GetDisplayedImage(cannyData.GNH);

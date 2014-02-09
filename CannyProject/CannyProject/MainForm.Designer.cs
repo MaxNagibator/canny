@@ -57,6 +57,12 @@
             this.uiShift2TextBox = new System.Windows.Forms.TextBox();
             this.uiGradientPictureBox = new System.Windows.Forms.PictureBox();
             this.uiSpecialPictureBox = new System.Windows.Forms.PictureBox();
+            this.uiKoefficient1Label = new System.Windows.Forms.Label();
+            this.uiKoefficient1TextBox = new System.Windows.Forms.TextBox();
+            this.uiKoefficient2Label = new System.Windows.Forms.Label();
+            this.uiKoefficient2TextBox = new System.Windows.Forms.TextBox();
+            this.uiKoefficient3Label = new System.Windows.Forms.Label();
+            this.uiKoefficient3TextBox = new System.Windows.Forms.TextBox();
             this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.uiInputImagePictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.uiGaussianFilteredImagePictureBox)).BeginInit();
@@ -313,11 +319,68 @@
             this.uiSpecialPictureBox.TabIndex = 82;
             this.uiSpecialPictureBox.TabStop = false;
             // 
+            // uiKoefficient1Label
+            // 
+            this.uiKoefficient1Label.AutoSize = true;
+            this.uiKoefficient1Label.Location = new System.Drawing.Point(399, 395);
+            this.uiKoefficient1Label.Name = "uiKoefficient1Label";
+            this.uiKoefficient1Label.Size = new System.Drawing.Size(63, 13);
+            this.uiKoefficient1Label.TabIndex = 84;
+            this.uiKoefficient1Label.Text = "Koefficient1";
+            // 
+            // uiKoefficient1TextBox
+            // 
+            this.uiKoefficient1TextBox.Location = new System.Drawing.Point(402, 411);
+            this.uiKoefficient1TextBox.Name = "uiKoefficient1TextBox";
+            this.uiKoefficient1TextBox.Size = new System.Drawing.Size(41, 20);
+            this.uiKoefficient1TextBox.TabIndex = 83;
+            this.uiKoefficient1TextBox.Text = "2";
+            // 
+            // uiKoefficient2Label
+            // 
+            this.uiKoefficient2Label.AutoSize = true;
+            this.uiKoefficient2Label.Location = new System.Drawing.Point(399, 428);
+            this.uiKoefficient2Label.Name = "uiKoefficient2Label";
+            this.uiKoefficient2Label.Size = new System.Drawing.Size(63, 13);
+            this.uiKoefficient2Label.TabIndex = 86;
+            this.uiKoefficient2Label.Text = "Koefficient2";
+            // 
+            // uiKoefficient2TextBox
+            // 
+            this.uiKoefficient2TextBox.Location = new System.Drawing.Point(402, 444);
+            this.uiKoefficient2TextBox.Name = "uiKoefficient2TextBox";
+            this.uiKoefficient2TextBox.Size = new System.Drawing.Size(41, 20);
+            this.uiKoefficient2TextBox.TabIndex = 85;
+            this.uiKoefficient2TextBox.Text = "5";
+            // 
+            // uiKoefficient3Label
+            // 
+            this.uiKoefficient3Label.AutoSize = true;
+            this.uiKoefficient3Label.Location = new System.Drawing.Point(399, 464);
+            this.uiKoefficient3Label.Name = "uiKoefficient3Label";
+            this.uiKoefficient3Label.Size = new System.Drawing.Size(63, 13);
+            this.uiKoefficient3Label.TabIndex = 88;
+            this.uiKoefficient3Label.Text = "Koefficient3";
+            // 
+            // uiKoefficient3TextBox
+            // 
+            this.uiKoefficient3TextBox.Location = new System.Drawing.Point(402, 480);
+            this.uiKoefficient3TextBox.Name = "uiKoefficient3TextBox";
+            this.uiKoefficient3TextBox.Size = new System.Drawing.Size(41, 20);
+            this.uiKoefficient3TextBox.TabIndex = 87;
+            this.uiKoefficient3TextBox.Text = "4";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1099, 698);
+            this.Controls.Add(this.uiKoefficient3Label);
+            this.Controls.Add(this.uiKoefficient3TextBox);
+            this.Controls.Add(this.uiKoefficient2Label);
+            this.Controls.Add(this.uiKoefficient2TextBox);
+            this.Controls.Add(this.uiKoefficient1Label);
+            this.Controls.Add(this.uiKoefficient1TextBox);
             this.Controls.Add(this.uiSpecialPictureBox);
             this.Controls.Add(this.uiGradientPictureBox);
             this.Controls.Add(this.uiShift2SizeLabel);
@@ -391,6 +454,12 @@
         private System.Windows.Forms.TextBox uiShift2TextBox;
         private System.Windows.Forms.PictureBox uiGradientPictureBox;
         private System.Windows.Forms.PictureBox uiSpecialPictureBox;
+        private System.Windows.Forms.Label uiKoefficient1Label;
+        private System.Windows.Forms.TextBox uiKoefficient1TextBox;
+        private System.Windows.Forms.Label uiKoefficient2Label;
+        private System.Windows.Forms.TextBox uiKoefficient2TextBox;
+        private System.Windows.Forms.Label uiKoefficient3Label;
+        private System.Windows.Forms.TextBox uiKoefficient3TextBox;
     }
 }
 

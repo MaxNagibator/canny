@@ -29,9 +29,16 @@ namespace CannyProject
         public float[,] SpecialMatrix2;
         private int _size;
         private int _shift;
+        private float _koefficient1;
+        private float _koefficient2;
+        private float _koefficient3;
 
-        public Canny(Bitmap inputImage, float maxHysteresisThresh, float minHysteresisThresh, int gaussianMaskSize, float sigmaforGaussianKernel, int shift, int shiftSize)
+        public Canny(Bitmap inputImage, float maxHysteresisThresh, float minHysteresisThresh, int gaussianMaskSize, float sigmaforGaussianKernel,
+            int shift, int shiftSize, float koefficient1, float koefficient2, float koefficient3)
         {
+            _koefficient1 = koefficient1;
+            _koefficient2 = koefficient2;
+            _koefficient3 = koefficient3;
             _shift = shift;
             _size = shiftSize;
             _kernelSize = gaussianMaskSize;
@@ -362,7 +369,7 @@ namespace CannyProject
             {
                 for (var j = 0; j <= (ObjInputImage.Height - 1); j++)
                 {
-                    if (gradient[i, j] < (SpecialMatrix[i, j] * 0.5))
+                    if (gradient[i, j] < (SpecialMatrix[i, j] * _koefficient1))
                     {
                         gradient[i, j] = 0;
                     }
