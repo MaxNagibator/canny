@@ -60,15 +60,16 @@ namespace CannyProject
                 var tl = (float) Convert.ToDouble(uiLowThresholdTextBox.Text);
                 var maskSize = Convert.ToInt32(uiGaussianMaskSizeTextBox.Text);
                 var sigma = (float) Convert.ToDouble(uiSigmaTextBox.Text);
-                var shift = (float) Convert.ToDouble(uiShiftTextBox.Text);
-                var shiftSize = (int) Convert.ToDouble(uiShiftSizeTextBox.Text);
+                var shift = Convert.ToInt32(uiShiftTextBox.Text);
+                var size = (int) Convert.ToDouble(uiSizeTextBox.Text);
                 uiInputImagePictureBox.Image = Image.FromFile(fileName);
-                var cannyData = new Canny((Bitmap) uiInputImagePictureBox.Image, th, tl, maskSize, sigma, shift,
-                                          shiftSize);
+                var cannyData = new Canny((Bitmap) uiInputImagePictureBox.Image, th, tl, maskSize, sigma, shift, size);
                 uiGaussianFilteredImagePictureBox.Image = cannyData.GetDisplayedImage(cannyData.GaussianFilterImage);
                 uiFinalCannyPictureBox.Image = cannyData.GetDisplayedImage(cannyData.EdgeMap);
                 uiGnhPictureBox.Image = cannyData.GetDisplayedImage(cannyData.GNH);
                 uiGnlPictureBox.Image = cannyData.GetDisplayedImage(cannyData.GNL);
+                uiGradientPictureBox.Image = cannyData.GetDisplayedImage(cannyData.Gradient);
+                uiSpecialPictureBox.Image = cannyData.GetDisplayedImage(cannyData.SpecialMatrix);
                 var a  = fileName.Substring(0,fileName.LastIndexOf('\\')+1)+"canny_"+fileName.Substring(fileName.LastIndexOf('\\')+1);
                 uiFinalCannyPictureBox.Image.Save(a);
             }

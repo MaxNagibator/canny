@@ -25,13 +25,15 @@ namespace CannyProject
         public float[,] GNL;
         public int[,] EdgeMap;
         public int[,] VisitedMap;
-        private int _shiftSize;
-        private float _shift;
+        public float[,] SpecialMatrix;
+        public float[,] SpecialMatrix2;
+        private int _size;
+        private int _shift;
 
-        public Canny(Bitmap inputImage, float maxHysteresisThresh, float minHysteresisThresh, int gaussianMaskSize, float sigmaforGaussianKernel, float shift, int shiftSize)
+        public Canny(Bitmap inputImage, float maxHysteresisThresh, float minHysteresisThresh, int gaussianMaskSize, float sigmaforGaussianKernel, int shift, int shiftSize)
         {
             _shift = shift;
-            _shiftSize = shiftSize;
+            _size = shiftSize;
             _kernelSize = gaussianMaskSize;
             _sigma = sigmaforGaussianKernel;
             SetGaussianAndCannyParameters(inputImage, maxHysteresisThresh, minHysteresisThresh);
@@ -79,6 +81,7 @@ namespace CannyProject
             image.UnlockBits(bitmapData1);
             return image;
         }
+
         public Bitmap GetDisplayedImage(float[,] greyImage)
         {
             int width = greyImage.GetLength(0);
@@ -147,7 +150,6 @@ namespace CannyProject
             SetNonMaxZero(limit, derivativeX,derivativeY);
             SetPostHysretesisFromNonMax(limit);
 
-
             //Find Max and Min in Post Hysterisis
             float min = 999;
             float max = 0;
@@ -172,30 +174,6 @@ namespace CannyProject
             SetEdgeMap255();
         }
 
-        private double GetBonusThresh(int i, int j)
-        {
-            float sum = 0;
-            var count = 0;
-            var leftBorder = (i - _shiftSize) < 0 ? 0 : (i - _shiftSize);
-            var rightBorder = (i + _shiftSize) > ObjInputImage.Width - 1 ? ObjInputImage.Width - 1 : (i + _shiftSize);
-            var topBorder = (j - _shiftSize) < 0 ? 0 : (j - _shiftSize);
-            var downBorder = (j + _shiftSize) > ObjInputImage.Height - 1 ? ObjInputImage.Height - 1 : (j + _shiftSize);
-            for (var a = leftBorder; a <= rightBorder; a++)
-            {
-                for (var b = topBorder; b <= downBorder; b++)
-                {
-                    if (a != i && b != j)
-                    {
-                        sum += Gradient[a, b];
-                        count++;
-                    }
-                }
-            }
-            var average = sum / count;
-            var bonus = Gradient[i, j] / average * _shift;
-            return bonus;
-        }
-
         private int[,] GetGaussianFilterImage()
         {
             int kernelWeight;
@@ -215,12 +193,11 @@ namespace CannyProject
                             sum = sum + ((float)GreyImage[i + k, j + l] * gaussianKernel[limit + k, limit + l]);
                         }
                     }
-                    output[i, j] = (int)(Math.Round(sum / kernelWeight))+GetBonusGaus(i,j);
+                    output[i, j] = (int)(Math.Round(sum / kernelWeight));
                 }
             }
             return output;
         }
-
 
         private int[,] GetGaussianKernel(int kernelSize, float sigma, out int Weight)
         {
@@ -278,30 +255,6 @@ namespace CannyProject
             return gaussianKernel;
         }
 
-        private int GetBonusGaus(int i, int j)
-        {
-            float sum = 0;
-            var count = 0;
-            var leftBorder = (i - _shiftSize) < 0 ? 0 : (i - _shiftSize);
-            var rightBorder = (i + _shiftSize) > ObjInputImage.Width - 1 ? ObjInputImage.Width - 1 : (i + _shiftSize);
-            var topBorder = (j - _shiftSize) < 0 ? 0 : (j - _shiftSize);
-            var downBorder = (j + _shiftSize) > ObjInputImage.Height - 1 ? ObjInputImage.Height - 1 : (j + _shiftSize);
-            for (var a = leftBorder; a <= rightBorder; a++)
-            {
-                for (var b = topBorder; b <= downBorder; b++)
-                {
-                    if (a != i && b != j)
-                    {
-                        sum += GreyImage[a, b];
-                        count++;
-                    }
-                }
-            }
-            var average = sum / count;
-            var bonus = GreyImage[i, j] / average * _shift;
-            return (int)(Math.Round(bonus));
-        }
-
         private float[,] GetDifferentiateX(int[,] gaussianFilterImage)
         {
             int[,] sobelMasksDx =
@@ -328,18 +281,18 @@ namespace CannyProject
         {
             var filterWidth = filter.GetLength(0);
             var filterHeight = filter.GetLength(1);
-            var output = new float[ObjInputImage.Width, ObjInputImage.Height];
+            var output = new float[ObjInputImage.Width,ObjInputImage.Height];
 
-            for (var i = filterWidth / 2; i <= (ObjInputImage.Width - filterWidth / 2) - 1; i++)
+            for (var i = filterWidth/2; i <= (ObjInputImage.Width - filterWidth/2) - 1; i++)
             {
-                for (var j = filterHeight / 2; j <= (ObjInputImage.Height - filterHeight / 2) - 1; j++)
+                for (var j = filterHeight/2; j <= (ObjInputImage.Height - filterHeight/2) - 1; j++)
                 {
                     float sum = 0;
-                    for (var k = -filterWidth / 2; k <= filterWidth / 2; k++)
+                    for (var k = -filterWidth/2; k <= filterWidth/2; k++)
                     {
-                        for (var l = -filterHeight / 2; l <= filterHeight / 2; l++)
+                        for (var l = -filterHeight/2; l <= filterHeight/2; l++)
                         {
-                            sum = sum + data[i + k, j + l] * filter[filterWidth / 2 + k, filterHeight / 2 + l];
+                            sum = sum + data[i + k, j + l]*filter[filterWidth/2 + k, filterHeight/2 + l];
                         }
                     }
                     output[i, j] = sum;
@@ -358,9 +311,65 @@ namespace CannyProject
                     gradient[i, j] = (float)Math.Sqrt((derivativeX[i, j] * derivativeX[i, j]) + (derivativeY[i, j] * derivativeY[i, j]));
                 }
             }
+            gradient = MyTestChangeGradient(gradient);
             return gradient;
         }
 
+        private float[,] MyTestChangeGradient(float[,] gradient)
+        {
+            SpecialMatrix = new float[ObjInputImage.Width,ObjInputImage.Height];
+            SpecialMatrix2 = new float[ObjInputImage.Width, ObjInputImage.Height];
+            var specWidth = _size;
+            var specHeight = _size;
+            var specStep = _shift;
+            for (var i = 0; i <= (ObjInputImage.Width - 1) - specWidth; i += specStep)
+            {
+                for (var j = 0; j <= (ObjInputImage.Height - 1) - specHeight; j += specStep)
+                {
+                    var max = gradient[i, j];
+                    for (var si = i; si <= i+specWidth; si++)
+                    {
+                        for (var sj = j; sj <= j+specHeight; sj++)
+                        {
+                            if (gradient[si, sj] > max)
+                            {
+                                max = gradient[si, sj];
+                            }
+                        }
+                    }
+                    for (var si = 0; si <= specWidth; si++)
+                    {
+                        for (var sj = 0; sj <= specHeight; sj++)
+                        {
+                            SpecialMatrix[i + si, j + sj] += max;
+                            SpecialMatrix2[i + si, j + sj] += 1;
+                        }
+                    }
+                }
+            }
+            for (var i = 0; i <= (ObjInputImage.Width - 1); i++)
+            {
+                for (var j = 0; j <= (ObjInputImage.Height - 1); j++)
+                {
+                    //if (SpecialMatrix[i, j] > 14)
+                    {
+                        SpecialMatrix[i, j] = SpecialMatrix[i, j] / SpecialMatrix2[i, j];
+                    }
+                }
+            }
+
+            for (var i = 0; i <= (ObjInputImage.Width - 1); i++)
+            {
+                for (var j = 0; j <= (ObjInputImage.Height - 1); j++)
+                {
+                    if (gradient[i, j] < (SpecialMatrix[i, j] * 0.5))
+                    {
+                        gradient[i, j] = 0;
+                    }
+                }
+            }
+            return gradient;
+        }
         private float[,] PerformNonMaximumSuppression(float[,] gradient)
         {
             // NonMax = Gradient; ?? ^_^
@@ -439,13 +448,12 @@ namespace CannyProject
             {
                 for (var j = limit; j <= (ObjInputImage.Height - limit) - 1; j++)
                 {
-                    var bonus = GetBonusThresh(i, j);
-                    if (PostHysteresis[i, j] >= _maxHysteresisThresh + bonus)
+                    if (PostHysteresis[i, j] >= _maxHysteresisThresh)
                     {
                         _edgePoints[i, j] = 1;
                         GNH[i, j] = 255;
                     }
-                    if ((PostHysteresis[i, j] < _maxHysteresisThresh + bonus) && (PostHysteresis[i, j] >= _minHysteresisThresh))
+                    if ((PostHysteresis[i, j] < _maxHysteresisThresh) && (PostHysteresis[i, j] >= _minHysteresisThresh))
                     {
                         _edgePoints[i, j] = 2;
                         GNL[i, j] = 255;
@@ -481,6 +489,7 @@ namespace CannyProject
                 }
             }
         }
+
 
         private void Travers(int X, int Y)
         {
@@ -562,6 +571,11 @@ namespace CannyProject
 
             //VisitedMap[X, Y] = 1;
             return;
+        }
+
+        public Image GetGradientImage(float[,] gradient)
+        {
+            throw new NotImplementedException();
         }
     }
 }
