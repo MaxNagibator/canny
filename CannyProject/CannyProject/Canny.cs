@@ -333,22 +333,20 @@ namespace CannyProject
             {
                 for (var j = 0; j <= (ObjInputImage.Height - 1) - specHeight; j += specStep)
                 {
-                    var max = gradient[i, j];
+                    float total = 0;
                     for (var si = i; si <= i+specWidth; si++)
                     {
                         for (var sj = j; sj <= j+specHeight; sj++)
                         {
-                            if (gradient[si, sj] > max)
-                            {
-                                max = gradient[si, sj];
-                            }
+                            total += gradient[si, sj];
                         }
                     }
+                    var avg = total/(specWidth*specHeight);
                     for (var si = 0; si <= specWidth; si++)
                     {
                         for (var sj = 0; sj <= specHeight; sj++)
                         {
-                            SpecialMatrix[i + si, j + sj] += max;
+                            SpecialMatrix[i + si, j + sj] += avg;
                             SpecialMatrix2[i + si, j + sj] += 1;
                         }
                     }
