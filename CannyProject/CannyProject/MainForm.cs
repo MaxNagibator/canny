@@ -46,7 +46,7 @@ namespace CannyProject
 
         private void ForLightDevelop()
         {
-            var imagePath = "D:\\мои документы\\Visual Studio 2012\\Projects\\Diplom\\canny\\Images\\x_e7da9276.jpg";
+            var imagePath = "..\\..\\..\\..\\..\\canny\\Images\\x_e7da9276.jpg";
             uiInputImagePictureBox.Image = Image.FromFile(imagePath);
             fileNames = new[] {imagePath};
         }
@@ -55,7 +55,6 @@ namespace CannyProject
         {
             foreach (var fileName in fileNames)
             {
-
                 var th = (float) Convert.ToDouble(uiHighThresholdTextBox.Text);
                 var tl = (float) Convert.ToDouble(uiLowThresholdTextBox.Text);
                 var maskSize = Convert.ToInt32(uiGaussianMaskSizeTextBox.Text);

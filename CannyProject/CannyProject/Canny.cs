@@ -179,6 +179,7 @@ namespace CannyProject
             SetGnhGnlEdgePoints(limit);
             HysterisisThresholding(_edgePoints);
             SetEdgeMap255();
+            MyTestChangeEdgeMap();
         }
 
         private int[,] GetGaussianFilterImage()
@@ -329,6 +330,7 @@ namespace CannyProject
             var specWidth = _size;
             var specHeight = _size;
             var specStep = _shift;
+
             for (var i = 0; i <= (ObjInputImage.Width - 1) - specWidth; i += specStep)
             {
                 for (var j = 0; j <= (ObjInputImage.Height - 1) - specHeight; j += specStep)
@@ -352,6 +354,7 @@ namespace CannyProject
                     }
                 }
             }
+
             for (var i = 0; i <= (ObjInputImage.Width - 1); i++)
             {
                 for (var j = 0; j <= (ObjInputImage.Height - 1); j++)
@@ -375,6 +378,7 @@ namespace CannyProject
             }
             return gradient;
         }
+
         private float[,] PerformNonMaximumSuppression(float[,] gradient)
         {
             // NonMax = Gradient; ?? ^_^
@@ -581,6 +585,13 @@ namespace CannyProject
         public Image GetGradientImage(float[,] gradient)
         {
             throw new NotImplementedException();
+        } 
+
+        private void MyTestChangeEdgeMap()
+        {
+
         }
+
+
     }
 }
