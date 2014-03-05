@@ -30,15 +30,12 @@ namespace CannyProject
         private int _size;
         private int _shift;
         private float _koefficient1;
-        private float _koefficient2;
-        private float _koefficient3;
+        private ClearEdgeMapHomeAlonePointKoeefficient _clearEdgeMapHomeAlonePointKoeefficient;
 
-        public Canny(Bitmap inputImage, float maxHysteresisThresh, float minHysteresisThresh, int gaussianMaskSize, float sigmaforGaussianKernel,
-            int shift, int shiftSize, float koefficient1, float koefficient2, float koefficient3)
+        public Canny(Bitmap inputImage, float maxHysteresisThresh, float minHysteresisThresh, int gaussianMaskSize, float sigmaforGaussianKernel, int shift, int shiftSize, float koefficient1, ClearEdgeMapHomeAlonePointKoeefficient clearEdgeMapHomeAlonePointKoeefficient)
         {
             _koefficient1 = koefficient1;
-            _koefficient2 = koefficient2;
-            _koefficient3 = koefficient3;
+            _clearEdgeMapHomeAlonePointKoeefficient = clearEdgeMapHomeAlonePointKoeefficient;
             _shift = shift;
             _size = shiftSize;
             _kernelSize = gaussianMaskSize;
@@ -179,7 +176,7 @@ namespace CannyProject
             SetGnhGnlEdgePoints(limit);
             HysterisisThresholding(_edgePoints);
             SetEdgeMap255();
-            MyTestChangeEdgeMap();
+            ClearEdgeMapHomeAlonePoint();
         }
 
         private int[,] GetGaussianFilterImage()
@@ -582,16 +579,58 @@ namespace CannyProject
             return;
         }
 
-        public Image GetGradientImage(float[,] gradient)
+        private void ClearEdgeMapHomeAlonePoint()
         {
-            throw new NotImplementedException();
-        } 
+            if (!_clearEdgeMapHomeAlonePointKoeefficient.IsNeedApply)
+            {
+                return;
+            }
 
-        private void MyTestChangeEdgeMap()
-        {
+            var temp = new int[ObjInputImage.Width, ObjInputImage.Height];
+            for (var i = 0; i <= (ObjInputImage.Width - 1); i++)
+            {
+                for (var j = 0; j <= (ObjInputImage.Height - 1); j++)
+                {
+                    temp[i, j] = 0;
+                }
+            }
+            var width = _clearEdgeMapHomeAlonePointKoeefficient.Width;
+            var height = _clearEdgeMapHomeAlonePointKoeefficient.Height;
+            var step = _clearEdgeMapHomeAlonePointKoeefficient.Step;
+            var count = _clearEdgeMapHomeAlonePointKoeefficient.Count;
 
+            for (var i = 0 + width; i <= (EdgeMap.GetLength(0) - 1) - width; i += step)
+            {
+                for (var j = 0 + height; j <= (EdgeMap.GetLength(1) - 1) - height; j += step)
+                {
+                    if (EdgeMap[i, j] == 255)
+                    {
+                        float total = 0;
+                        for (var si = i - width; si <= i + width; si++)
+                        {
+                            for (var sj = j - width; sj <= j + height; sj++)
+                            {
+                                total += EdgeMap[si, sj];
+                            }
+                        }
+                        if (total < 255 * count)
+                        {
+                            temp[i, j] = 1;
+                        }
+                    }
+                }
+            }
+
+            for (var i = 0; i <= (temp.GetLength(0) - 1); i++)
+            {
+                for (var j = 0; j <= (temp.GetLength(1) - 1); j++)
+                {
+                    if (temp[i, j] == 1)
+                    {
+                        EdgeMap[i, j] = 0;
+                    }
+                }
+            }
         }
-
-
     }
 }

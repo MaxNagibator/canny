@@ -33,9 +33,6 @@
             this.uiOpenImageToolStripLabel = new System.Windows.Forms.ToolStripLabel();
             this.toolStripLabel4 = new System.Windows.Forms.ToolStripLabel();
             this.label3 = new System.Windows.Forms.Label();
-            this.uiInputImagePictureBox = new System.Windows.Forms.PictureBox();
-            this.uiGaussianFilteredImagePictureBox = new System.Windows.Forms.PictureBox();
-            this.uiFinalCannyPictureBox = new System.Windows.Forms.PictureBox();
             this.uiSigmaLabel = new System.Windows.Forms.Label();
             this.uiGaussianMaskSizeLabel = new System.Windows.Forms.Label();
             this.uiSigmaTextBox = new System.Windows.Forms.TextBox();
@@ -45,8 +42,6 @@
             this.uiLowThresholdTextBox = new System.Windows.Forms.TextBox();
             this.uiCalcButton = new System.Windows.Forms.Button();
             this.uiHighThresholdTextBox = new System.Windows.Forms.TextBox();
-            this.uiGnhPictureBox = new System.Windows.Forms.PictureBox();
-            this.uiGnlPictureBox = new System.Windows.Forms.PictureBox();
             this.uiShiftLabel = new System.Windows.Forms.Label();
             this.uiShiftTextBox = new System.Windows.Forms.TextBox();
             this.uiShiftSizeLabel = new System.Windows.Forms.Label();
@@ -55,22 +50,28 @@
             this.uiShift2SizeTextBox = new System.Windows.Forms.TextBox();
             this.uiShift2Label = new System.Windows.Forms.Label();
             this.uiShift2TextBox = new System.Windows.Forms.TextBox();
-            this.uiGradientPictureBox = new System.Windows.Forms.PictureBox();
-            this.uiSpecialPictureBox = new System.Windows.Forms.PictureBox();
             this.uiKoefficient1Label = new System.Windows.Forms.Label();
             this.uiKoefficient1TextBox = new System.Windows.Forms.TextBox();
             this.uiKoefficient2Label = new System.Windows.Forms.Label();
             this.uiKoefficient2TextBox = new System.Windows.Forms.TextBox();
             this.uiKoefficient3Label = new System.Windows.Forms.Label();
             this.uiKoefficient3TextBox = new System.Windows.Forms.TextBox();
+            this.uiSpecialPictureBox = new System.Windows.Forms.PictureBox();
+            this.uiGradientPictureBox = new System.Windows.Forms.PictureBox();
+            this.uiGnlPictureBox = new System.Windows.Forms.PictureBox();
+            this.uiGnhPictureBox = new System.Windows.Forms.PictureBox();
+            this.uiFinalCannyPictureBox = new System.Windows.Forms.PictureBox();
+            this.uiGaussianFilteredImagePictureBox = new System.Windows.Forms.PictureBox();
+            this.uiInputImagePictureBox = new System.Windows.Forms.PictureBox();
+            this.uiClearEdgeMapHomeAlonePointKoeefficientControl = new CannyProject.ClearEdgeMapHomeAlonePointKoeefficientControl();
             this.toolStrip1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.uiInputImagePictureBox)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.uiGaussianFilteredImagePictureBox)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.uiFinalCannyPictureBox)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.uiGnhPictureBox)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.uiGnlPictureBox)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.uiGradientPictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.uiSpecialPictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.uiGradientPictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.uiGnlPictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.uiGnhPictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.uiFinalCannyPictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.uiGaussianFilteredImagePictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.uiInputImagePictureBox)).BeginInit();
             this.SuspendLayout();
             // 
             // toolStrip1
@@ -105,33 +106,6 @@
             this.label3.Size = new System.Drawing.Size(63, 13);
             this.label3.TabIndex = 53;
             this.label3.Text = "Input Image";
-            // 
-            // uiInputImagePictureBox
-            // 
-            this.uiInputImagePictureBox.Location = new System.Drawing.Point(14, 41);
-            this.uiInputImagePictureBox.Name = "uiInputImagePictureBox";
-            this.uiInputImagePictureBox.Size = new System.Drawing.Size(256, 196);
-            this.uiInputImagePictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.uiInputImagePictureBox.TabIndex = 52;
-            this.uiInputImagePictureBox.TabStop = false;
-            // 
-            // uiGaussianFilteredImagePictureBox
-            // 
-            this.uiGaussianFilteredImagePictureBox.Location = new System.Drawing.Point(281, 41);
-            this.uiGaussianFilteredImagePictureBox.Name = "uiGaussianFilteredImagePictureBox";
-            this.uiGaussianFilteredImagePictureBox.Size = new System.Drawing.Size(256, 196);
-            this.uiGaussianFilteredImagePictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.uiGaussianFilteredImagePictureBox.TabIndex = 57;
-            this.uiGaussianFilteredImagePictureBox.TabStop = false;
-            // 
-            // uiFinalCannyPictureBox
-            // 
-            this.uiFinalCannyPictureBox.Location = new System.Drawing.Point(14, 243);
-            this.uiFinalCannyPictureBox.Name = "uiFinalCannyPictureBox";
-            this.uiFinalCannyPictureBox.Size = new System.Drawing.Size(256, 196);
-            this.uiFinalCannyPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.uiFinalCannyPictureBox.TabIndex = 58;
-            this.uiFinalCannyPictureBox.TabStop = false;
             // 
             // uiSigmaLabel
             // 
@@ -211,24 +185,6 @@
             this.uiHighThresholdTextBox.TabIndex = 62;
             this.uiHighThresholdTextBox.Text = "20";
             // 
-            // uiGnhPictureBox
-            // 
-            this.uiGnhPictureBox.Location = new System.Drawing.Point(543, 41);
-            this.uiGnhPictureBox.Name = "uiGnhPictureBox";
-            this.uiGnhPictureBox.Size = new System.Drawing.Size(256, 196);
-            this.uiGnhPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.uiGnhPictureBox.TabIndex = 71;
-            this.uiGnhPictureBox.TabStop = false;
-            // 
-            // uiGnlPictureBox
-            // 
-            this.uiGnlPictureBox.Location = new System.Drawing.Point(805, 41);
-            this.uiGnlPictureBox.Name = "uiGnlPictureBox";
-            this.uiGnlPictureBox.Size = new System.Drawing.Size(256, 196);
-            this.uiGnlPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.uiGnlPictureBox.TabIndex = 72;
-            this.uiGnlPictureBox.TabStop = false;
-            // 
             // uiShiftLabel
             // 
             this.uiShiftLabel.AutoSize = true;
@@ -301,24 +257,6 @@
             this.uiShift2TextBox.Text = "30";
             this.uiShift2TextBox.Visible = false;
             // 
-            // uiGradientPictureBox
-            // 
-            this.uiGradientPictureBox.Location = new System.Drawing.Point(543, 242);
-            this.uiGradientPictureBox.Name = "uiGradientPictureBox";
-            this.uiGradientPictureBox.Size = new System.Drawing.Size(256, 196);
-            this.uiGradientPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.uiGradientPictureBox.TabIndex = 81;
-            this.uiGradientPictureBox.TabStop = false;
-            // 
-            // uiSpecialPictureBox
-            // 
-            this.uiSpecialPictureBox.Location = new System.Drawing.Point(543, 444);
-            this.uiSpecialPictureBox.Name = "uiSpecialPictureBox";
-            this.uiSpecialPictureBox.Size = new System.Drawing.Size(256, 196);
-            this.uiSpecialPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.uiSpecialPictureBox.TabIndex = 82;
-            this.uiSpecialPictureBox.TabStop = false;
-            // 
             // uiKoefficient1Label
             // 
             this.uiKoefficient1Label.AutoSize = true;
@@ -370,11 +308,83 @@
             this.uiKoefficient3TextBox.TabIndex = 87;
             this.uiKoefficient3TextBox.Text = "4";
             // 
+            // uiSpecialPictureBox
+            // 
+            this.uiSpecialPictureBox.Location = new System.Drawing.Point(543, 444);
+            this.uiSpecialPictureBox.Name = "uiSpecialPictureBox";
+            this.uiSpecialPictureBox.Size = new System.Drawing.Size(256, 196);
+            this.uiSpecialPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.uiSpecialPictureBox.TabIndex = 82;
+            this.uiSpecialPictureBox.TabStop = false;
+            // 
+            // uiGradientPictureBox
+            // 
+            this.uiGradientPictureBox.Location = new System.Drawing.Point(543, 242);
+            this.uiGradientPictureBox.Name = "uiGradientPictureBox";
+            this.uiGradientPictureBox.Size = new System.Drawing.Size(256, 196);
+            this.uiGradientPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.uiGradientPictureBox.TabIndex = 81;
+            this.uiGradientPictureBox.TabStop = false;
+            // 
+            // uiGnlPictureBox
+            // 
+            this.uiGnlPictureBox.Location = new System.Drawing.Point(805, 41);
+            this.uiGnlPictureBox.Name = "uiGnlPictureBox";
+            this.uiGnlPictureBox.Size = new System.Drawing.Size(256, 196);
+            this.uiGnlPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.uiGnlPictureBox.TabIndex = 72;
+            this.uiGnlPictureBox.TabStop = false;
+            // 
+            // uiGnhPictureBox
+            // 
+            this.uiGnhPictureBox.Location = new System.Drawing.Point(543, 41);
+            this.uiGnhPictureBox.Name = "uiGnhPictureBox";
+            this.uiGnhPictureBox.Size = new System.Drawing.Size(256, 196);
+            this.uiGnhPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.uiGnhPictureBox.TabIndex = 71;
+            this.uiGnhPictureBox.TabStop = false;
+            // 
+            // uiFinalCannyPictureBox
+            // 
+            this.uiFinalCannyPictureBox.Location = new System.Drawing.Point(14, 243);
+            this.uiFinalCannyPictureBox.Name = "uiFinalCannyPictureBox";
+            this.uiFinalCannyPictureBox.Size = new System.Drawing.Size(256, 196);
+            this.uiFinalCannyPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.uiFinalCannyPictureBox.TabIndex = 58;
+            this.uiFinalCannyPictureBox.TabStop = false;
+            // 
+            // uiGaussianFilteredImagePictureBox
+            // 
+            this.uiGaussianFilteredImagePictureBox.Location = new System.Drawing.Point(281, 41);
+            this.uiGaussianFilteredImagePictureBox.Name = "uiGaussianFilteredImagePictureBox";
+            this.uiGaussianFilteredImagePictureBox.Size = new System.Drawing.Size(256, 196);
+            this.uiGaussianFilteredImagePictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.uiGaussianFilteredImagePictureBox.TabIndex = 57;
+            this.uiGaussianFilteredImagePictureBox.TabStop = false;
+            // 
+            // uiInputImagePictureBox
+            // 
+            this.uiInputImagePictureBox.Location = new System.Drawing.Point(14, 41);
+            this.uiInputImagePictureBox.Name = "uiInputImagePictureBox";
+            this.uiInputImagePictureBox.Size = new System.Drawing.Size(256, 196);
+            this.uiInputImagePictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.uiInputImagePictureBox.TabIndex = 52;
+            this.uiInputImagePictureBox.TabStop = false;
+            // 
+            // uiClearEdgeMapHomeAlonePointKoeefficientControl
+            // 
+            this.uiClearEdgeMapHomeAlonePointKoeefficientControl.Location = new System.Drawing.Point(844, 340);
+            this.uiClearEdgeMapHomeAlonePointKoeefficientControl.MinimumSize = new System.Drawing.Size(15, 15);
+            this.uiClearEdgeMapHomeAlonePointKoeefficientControl.Name = "uiClearEdgeMapHomeAlonePointKoeefficientControl";
+            this.uiClearEdgeMapHomeAlonePointKoeefficientControl.Size = new System.Drawing.Size(243, 217);
+            this.uiClearEdgeMapHomeAlonePointKoeefficientControl.TabIndex = 89;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1099, 698);
+            this.Controls.Add(this.uiClearEdgeMapHomeAlonePointKoeefficientControl);
             this.Controls.Add(this.uiKoefficient3Label);
             this.Controls.Add(this.uiKoefficient3TextBox);
             this.Controls.Add(this.uiKoefficient2Label);
@@ -412,13 +422,13 @@
             this.Text = "Canny";
             this.toolStrip1.ResumeLayout(false);
             this.toolStrip1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.uiInputImagePictureBox)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.uiGaussianFilteredImagePictureBox)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.uiFinalCannyPictureBox)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.uiGnhPictureBox)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.uiGnlPictureBox)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.uiGradientPictureBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.uiSpecialPictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.uiGradientPictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.uiGnlPictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.uiGnhPictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.uiFinalCannyPictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.uiGaussianFilteredImagePictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.uiInputImagePictureBox)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -460,6 +470,7 @@
         private System.Windows.Forms.TextBox uiKoefficient2TextBox;
         private System.Windows.Forms.Label uiKoefficient3Label;
         private System.Windows.Forms.TextBox uiKoefficient3TextBox;
+        private ClearEdgeMapHomeAlonePointKoeefficientControl uiClearEdgeMapHomeAlonePointKoeefficientControl;
     }
 }
 
