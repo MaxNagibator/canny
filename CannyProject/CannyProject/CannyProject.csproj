@@ -46,11 +46,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Canny.cs" />
-    <Compile Include="ClearEdgeMapHomeAlonePointKoeefficient.cs" />
-    <Compile Include="GroupBoxWithSpoilerControl.cs">
+    <Compile Include="KoeeficientClasses\ClearEdgeMapHomeAlonePointKoeefficient.cs" />
+    <Compile Include="KoeeficientClasses\Gui\GroupBoxWithSpoilerControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="GroupBoxWithSpoilerControl.designer.cs">
+    <Compile Include="KoeeficientClasses\Gui\GroupBoxWithSpoilerControl.designer.cs">
       <DependentUpon>GroupBoxWithSpoilerControl.cs</DependentUpon>
     </Compile>
     <Compile Include="MainForm.cs">
@@ -67,19 +67,20 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ClearEdgeMapHomeAlonePointKoeefficientControl.cs">
+    <Compile Include="KoeeficientClasses\Gui\ClearEdgeMapHomeAlonePointKoeefficientControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="ClearEdgeMapHomeAlonePointKoeefficientControl.designer.cs">
+    <Compile Include="KoeeficientClasses\Gui\ClearEdgeMapHomeAlonePointKoeefficientControl.designer.cs">
       <DependentUpon>ClearEdgeMapHomeAlonePointKoeefficientControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="MainKoeefficientControl.cs">
+    <Compile Include="KoeeficientClasses\Gui\MainKoeefficientControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="MainKoeefficientControl.designer.cs">
+    <Compile Include="KoeeficientClasses\Gui\MainKoeefficientControl.designer.cs">
       <DependentUpon>MainKoeefficientControl.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="GroupBoxWithSpoilerControl.resx">
+    <Compile Include="KoeeficientClasses\MainKoeefficient.cs" />
+    <EmbeddedResource Include="KoeeficientClasses\Gui\GroupBoxWithSpoilerControl.resx">
       <DependentUpon>GroupBoxWithSpoilerControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
@@ -95,10 +96,10 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="ClearEdgeMapHomeAlonePointKoeefficientControl.resx">
+    <EmbeddedResource Include="KoeeficientClasses\Gui\ClearEdgeMapHomeAlonePointKoeefficientControl.resx">
       <DependentUpon>ClearEdgeMapHomeAlonePointKoeefficientControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="MainKoeefficientControl.resx">
+    <EmbeddedResource Include="KoeeficientClasses\Gui\MainKoeefficientControl.resx">
       <DependentUpon>MainKoeefficientControl.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
@@ -120,6 +121,7 @@
   <ItemGroup>
     <None Include="Resources\spoilerIcoRevert.png" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

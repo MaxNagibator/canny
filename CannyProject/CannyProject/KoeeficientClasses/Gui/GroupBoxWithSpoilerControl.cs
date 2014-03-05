@@ -3,7 +3,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using CannyProject.Properties;
 
-namespace CannyProject
+namespace CannyProject.KoeeficientClasses.Gui
 {
     public partial class GroupBoxWithSpoilerControl : UserControl
     {

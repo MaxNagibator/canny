@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace CannyProject
@@ -55,17 +49,14 @@ namespace CannyProject
         {
             foreach (var fileName in fileNames)
             {
-                var th = (float) Convert.ToDouble(uiHighThresholdTextBox.Text);
-                var tl = (float) Convert.ToDouble(uiLowThresholdTextBox.Text);
-                var maskSize = Convert.ToInt32(uiGaussianMaskSizeTextBox.Text);
-                var sigma = (float) Convert.ToDouble(uiSigmaTextBox.Text);
                 var shift = Convert.ToInt32(uiShiftTextBox.Text);
                 var size = (int) Convert.ToDouble(uiSizeTextBox.Text);
                 var koefficient1 = (float)Convert.ToDouble(uiKoefficient1TextBox.Text);
                 uiInputImagePictureBox.Image = Image.FromFile(fileName);
                 _switcher = !_switcher;
+                var mainKoeefficient = uiMainKoeefficientControl.GetKoeefficients();
                 var clearEdgeMapHomeAlonePointKoeefficient = uiClearEdgeMapHomeAlonePointKoeefficientControl.GetKoeefficients();
-                var cannyData = new Canny((Bitmap) uiInputImagePictureBox.Image, th, tl, maskSize, sigma, shift, size,
+                var cannyData = new Canny((Bitmap)uiInputImagePictureBox.Image, mainKoeefficient, shift, size,
                     koefficient1, clearEdgeMapHomeAlonePointKoeefficient);
                 uiGaussianFilteredImagePictureBox.Image = cannyData.GetDisplayedImage(cannyData.GaussianFilterImage);
                 uiFinalCannyPictureBox.Image = cannyData.GetDisplayedImage(cannyData.EdgeMap);

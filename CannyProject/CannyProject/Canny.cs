@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Drawing.Imaging;
 using System.Drawing;
 using System.IO;
+using CannyProject.KoeeficientClasses;
 
 namespace CannyProject
 {
@@ -12,8 +13,6 @@ namespace CannyProject
         public int[,] GreyImage;
 
         //Gaussian Kernel Data
-        private readonly int _kernelSize = 5;
-        private readonly float _sigma = 1;   // for N=2 Sigma =0.85  N=5 Sigma =1, N=9 Sigma = 2    2*Sigma = (int)N/2
         //Canny Edge Detection Parameters
         private float _maxHysteresisThresh, _minHysteresisThresh;
         public int[,] GaussianFilterImage;
@@ -30,17 +29,18 @@ namespace CannyProject
         private int _size;
         private int _shift;
         private float _koefficient1;
+        private MainKoeefficient _mainKoeefficient;
         private ClearEdgeMapHomeAlonePointKoeefficient _clearEdgeMapHomeAlonePointKoeefficient;
 
-        public Canny(Bitmap inputImage, float maxHysteresisThresh, float minHysteresisThresh, int gaussianMaskSize, float sigmaforGaussianKernel, int shift, int shiftSize, float koefficient1, ClearEdgeMapHomeAlonePointKoeefficient clearEdgeMapHomeAlonePointKoeefficient)
+        public Canny(Bitmap inputImage, MainKoeefficient mainKoeefficient, int shift, int shiftSize, float koefficient1, ClearEdgeMapHomeAlonePointKoeefficient clearEdgeMapHomeAlonePointKoeefficient)
         {
             _koefficient1 = koefficient1;
             _clearEdgeMapHomeAlonePointKoeefficient = clearEdgeMapHomeAlonePointKoeefficient;
             _shift = shift;
             _size = shiftSize;
-            _kernelSize = gaussianMaskSize;
-            _sigma = sigmaforGaussianKernel;
-            SetGaussianAndCannyParameters(inputImage, maxHysteresisThresh, minHysteresisThresh);
+            _mainKoeefficient = mainKoeefficient;
+
+            SetGaussianAndCannyParameters(inputImage, mainKoeefficient.maxHysteresisThresh, mainKoeefficient.minHysteresisThresh);
             ReadImage();
             DetectCannyEdges();
         }
@@ -150,7 +150,7 @@ namespace CannyProject
             NonMax = PerformNonMaximumSuppression(Gradient);
 
 
-            int limit = _kernelSize / 2;
+            int limit = _mainKoeefficient.kernelSize / 2;
             SetNonMaxZero(limit, derivativeX,derivativeY);
             SetPostHysretesisFromNonMax(limit);
 
@@ -182,8 +182,8 @@ namespace CannyProject
         private int[,] GetGaussianFilterImage()
         {
             int kernelWeight;
-            var gaussianKernel = GetGaussianKernel(_kernelSize, _sigma, out kernelWeight);
-            int limit = _kernelSize / 2;
+            var gaussianKernel = GetGaussianKernel(_mainKoeefficient.kernelSize, _mainKoeefficient.sigma, out kernelWeight);
+            int limit = _mainKoeefficient.kernelSize / 2;
             int[,] output = GreyImage;
 
             for (var i = limit; i <= ((ObjInputImage.Width - 1) - limit); i++)
@@ -470,7 +470,7 @@ namespace CannyProject
 
         private void HysterisisThresholding(int[,] edges)
         {
-            int limit = _kernelSize / 2;
+            int limit = _mainKoeefficient.kernelSize / 2;
             for (var i = limit; i <= (ObjInputImage.Width - 1) - limit; i++)
             {
                 for (var j = limit; j <= (ObjInputImage.Height - 1) - limit; j++)

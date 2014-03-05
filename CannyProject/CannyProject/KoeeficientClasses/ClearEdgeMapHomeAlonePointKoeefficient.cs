@@ -1,4 +1,4 @@
-﻿namespace CannyProject
+﻿namespace CannyProject.KoeeficientClasses
 {
     public class ClearEdgeMapHomeAlonePointKoeefficient
     {

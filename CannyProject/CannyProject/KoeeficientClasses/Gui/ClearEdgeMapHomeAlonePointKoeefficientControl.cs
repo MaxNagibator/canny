@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace CannyProject
+namespace CannyProject.KoeeficientClasses.Gui
 {
     public partial class ClearEdgeMapHomeAlonePointKoeefficientControl : GroupBoxWithSpoilerControl
     {

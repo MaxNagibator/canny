@@ -1,4 +1,4 @@
-﻿namespace CannyProject
+﻿namespace CannyProject.KoeeficientClasses.Gui
 {
     partial class GroupBoxWithSpoilerControl
     {

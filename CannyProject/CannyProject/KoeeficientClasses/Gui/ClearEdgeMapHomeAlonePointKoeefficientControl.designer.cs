@@ -1,6 +1,6 @@
-﻿namespace CannyProject
+﻿namespace CannyProject.KoeeficientClasses.Gui
 {
-    partial class MainKoeefficientControl
+    partial class ClearEdgeMapHomeAlonePointKoeefficientControl
     {
         /// <summary> 
         /// Required designer variable.
