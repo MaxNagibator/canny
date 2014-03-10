@@ -7,7 +7,7 @@ namespace CannyProject.KoeeficientClasses.Gui
         public MainKoeefficientControl()
         {
             InitializeComponent();
-            SetName("MainKoefficients");
+            SetName("Main");
         }
 
         public MainKoeefficient GetKoeefficients()

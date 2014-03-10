@@ -53,9 +53,17 @@
             this.uiMainGroupBox.Controls.Add(this.uiStepTextBox);
             this.uiMainGroupBox.Controls.Add(this.uiHeightTextBox);
             this.uiMainGroupBox.Controls.Add(this.uiStepLabel);
-            this.uiMainGroupBox.Size = new System.Drawing.Size(211, 198);
+            this.uiMainGroupBox.Size = new System.Drawing.Size(119, 225);
             // 
-            // uiCheckBox
+            // uiSpoilerPanel
+            // 
+            this.uiSpoilerPanel.Size = new System.Drawing.Size(119, 15);
+            // 
+            // uiSpoilerSlipPictureBox
+            // 
+            this.uiSpoilerSlipPictureBox.Location = new System.Drawing.Point(106, 2);
+            // 
+            // uiIsNeedApplyCheckBox
             // 
             this.uiIsNeedApplyCheckBox.AutoSize = true;
             this.uiIsNeedApplyCheckBox.Location = new System.Drawing.Point(19, 30);
@@ -68,7 +76,7 @@
             // uiCountLabel
             // 
             this.uiCountLabel.AutoSize = true;
-            this.uiCountLabel.Location = new System.Drawing.Point(125, 118);
+            this.uiCountLabel.Location = new System.Drawing.Point(16, 171);
             this.uiCountLabel.Name = "uiCountLabel";
             this.uiCountLabel.Size = new System.Drawing.Size(35, 13);
             this.uiCountLabel.TabIndex = 106;
@@ -76,7 +84,7 @@
             // 
             // uiCountTextBox
             // 
-            this.uiCountTextBox.Location = new System.Drawing.Point(128, 134);
+            this.uiCountTextBox.Location = new System.Drawing.Point(19, 187);
             this.uiCountTextBox.Name = "uiCountTextBox";
             this.uiCountTextBox.Size = new System.Drawing.Size(41, 20);
             this.uiCountTextBox.TabIndex = 105;
@@ -85,7 +93,7 @@
             // uiHeightLabel
             // 
             this.uiHeightLabel.AutoSize = true;
-            this.uiHeightLabel.Location = new System.Drawing.Point(125, 82);
+            this.uiHeightLabel.Location = new System.Drawing.Point(16, 135);
             this.uiHeightLabel.Name = "uiHeightLabel";
             this.uiHeightLabel.Size = new System.Drawing.Size(38, 13);
             this.uiHeightLabel.TabIndex = 104;
@@ -93,7 +101,7 @@
             // 
             // uiHeightTextBox
             // 
-            this.uiHeightTextBox.Location = new System.Drawing.Point(128, 98);
+            this.uiHeightTextBox.Location = new System.Drawing.Point(19, 151);
             this.uiHeightTextBox.Name = "uiHeightTextBox";
             this.uiHeightTextBox.Size = new System.Drawing.Size(41, 20);
             this.uiHeightTextBox.TabIndex = 103;
@@ -102,7 +110,7 @@
             // uiStepLabel
             // 
             this.uiStepLabel.AutoSize = true;
-            this.uiStepLabel.Location = new System.Drawing.Point(38, 118);
+            this.uiStepLabel.Location = new System.Drawing.Point(16, 95);
             this.uiStepLabel.Name = "uiStepLabel";
             this.uiStepLabel.Size = new System.Drawing.Size(29, 13);
             this.uiStepLabel.TabIndex = 102;
@@ -110,7 +118,7 @@
             // 
             // uiStepTextBox
             // 
-            this.uiStepTextBox.Location = new System.Drawing.Point(41, 134);
+            this.uiStepTextBox.Location = new System.Drawing.Point(19, 111);
             this.uiStepTextBox.Name = "uiStepTextBox";
             this.uiStepTextBox.Size = new System.Drawing.Size(41, 20);
             this.uiStepTextBox.TabIndex = 101;
@@ -119,7 +127,7 @@
             // uiWidthLabel
             // 
             this.uiWidthLabel.AutoSize = true;
-            this.uiWidthLabel.Location = new System.Drawing.Point(38, 82);
+            this.uiWidthLabel.Location = new System.Drawing.Point(16, 59);
             this.uiWidthLabel.Name = "uiWidthLabel";
             this.uiWidthLabel.Size = new System.Drawing.Size(35, 13);
             this.uiWidthLabel.TabIndex = 100;
@@ -127,16 +135,17 @@
             // 
             // uiWidthTextBox
             // 
-            this.uiWidthTextBox.Location = new System.Drawing.Point(41, 98);
+            this.uiWidthTextBox.Location = new System.Drawing.Point(19, 75);
             this.uiWidthTextBox.Name = "uiWidthTextBox";
             this.uiWidthTextBox.Size = new System.Drawing.Size(41, 20);
             this.uiWidthTextBox.TabIndex = 99;
             this.uiWidthTextBox.Text = "2";
             // 
-            // Control
+            // ClearEdgeMapHomeAlonePointKoeefficientControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.Name = "Control";
+            this.Name = "ClearEdgeMapHomeAlonePointKoeefficientControl";
+            this.Size = new System.Drawing.Size(125, 243);
             this.uiMainGroupBox.ResumeLayout(false);
             this.uiMainGroupBox.PerformLayout();
             this.uiSpoilerPanel.ResumeLayout(false);

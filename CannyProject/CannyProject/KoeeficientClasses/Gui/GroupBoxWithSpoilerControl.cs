@@ -31,6 +31,7 @@ namespace CannyProject.KoeeficientClasses.Gui
         public void SetName(string name)
         {
             uiNameLabel.Text = name;
+            toolTip1.SetToolTip(uiSpoilerPanel, name);
         }
 
         private void uiSpoiler_MouseClick(object sender, MouseEventArgs e)

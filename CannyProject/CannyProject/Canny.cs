@@ -31,13 +31,12 @@ namespace CannyProject
         private float _koefficient1;
         private MainKoeefficient _mainKoeefficient;
         private ClearEdgeMapHomeAlonePointKoeefficient _clearEdgeMapHomeAlonePointKoeefficient;
+        private ClearGradientIfOtherNeighborhoodKoeefficient _clearGradientIfOtherNeighborhoodKoeefficient;
 
-        public Canny(Bitmap inputImage, MainKoeefficient mainKoeefficient, int shift, int shiftSize, float koefficient1, ClearEdgeMapHomeAlonePointKoeefficient clearEdgeMapHomeAlonePointKoeefficient)
+        public Canny(Bitmap inputImage, MainKoeefficient mainKoeefficient, ClearGradientIfOtherNeighborhoodKoeefficient clearGradientIfOtherNeighborhoodKoeefficient, ClearEdgeMapHomeAlonePointKoeefficient clearEdgeMapHomeAlonePointKoeefficient)
         {
-            _koefficient1 = koefficient1;
             _clearEdgeMapHomeAlonePointKoeefficient = clearEdgeMapHomeAlonePointKoeefficient;
-            _shift = shift;
-            _size = shiftSize;
+            _clearGradientIfOtherNeighborhoodKoeefficient = clearGradientIfOtherNeighborhoodKoeefficient;
             _mainKoeefficient = mainKoeefficient;
 
             SetGaussianAndCannyParameters(inputImage, mainKoeefficient.maxHysteresisThresh, mainKoeefficient.minHysteresisThresh);

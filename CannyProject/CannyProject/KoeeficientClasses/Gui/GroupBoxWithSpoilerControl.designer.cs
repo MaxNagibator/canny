@@ -28,10 +28,12 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.uiMainGroupBox = new System.Windows.Forms.GroupBox();
             this.uiSpoilerPanel = new System.Windows.Forms.Panel();
             this.uiSpoilerSlipPictureBox = new System.Windows.Forms.PictureBox();
             this.uiNameLabel = new System.Windows.Forms.Label();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.uiSpoilerPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.uiSpoilerSlipPictureBox)).BeginInit();
             this.SuspendLayout();
@@ -58,6 +60,7 @@
             this.uiSpoilerPanel.Name = "uiSpoilerPanel";
             this.uiSpoilerPanel.Size = new System.Drawing.Size(211, 15);
             this.uiSpoilerPanel.TabIndex = 0;
+            this.toolTip1.SetToolTip(this.uiSpoilerPanel, "^_^");
             this.uiSpoilerPanel.MouseClick += new System.Windows.Forms.MouseEventHandler(this.uiSpoiler_MouseClick);
             // 
             // uiSpoilerSlipPictureBox
@@ -108,5 +111,6 @@
         protected System.Windows.Forms.Panel uiSpoilerPanel;
         protected internal System.Windows.Forms.PictureBox uiSpoilerSlipPictureBox;
         protected System.Windows.Forms.Label uiNameLabel;
+        private System.Windows.Forms.ToolTip toolTip1;
     }
 }

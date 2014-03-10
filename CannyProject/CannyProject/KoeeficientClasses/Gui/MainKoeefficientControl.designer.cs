@@ -51,7 +51,15 @@
             this.uiMainGroupBox.Controls.Add(this.uiHighThresholdLabel);
             this.uiMainGroupBox.Controls.Add(this.uiLowThresholdTextBox);
             this.uiMainGroupBox.Controls.Add(this.uiHighThresholdTextBox);
-            this.uiMainGroupBox.Size = new System.Drawing.Size(211, 198);
+            this.uiMainGroupBox.Size = new System.Drawing.Size(136, 199);
+            // 
+            // uiSpoilerPanel
+            // 
+            this.uiSpoilerPanel.Size = new System.Drawing.Size(136, 15);
+            // 
+            // uiSpoilerSlipPictureBox
+            // 
+            this.uiSpoilerSlipPictureBox.Location = new System.Drawing.Point(123, 2);
             // 
             // uiSigmaLabel
             // 
@@ -125,6 +133,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.Name = "MainKoeefficientControl";
+            this.Size = new System.Drawing.Size(142, 217);
             this.uiMainGroupBox.ResumeLayout(false);
             this.uiMainGroupBox.PerformLayout();
             this.uiSpoilerPanel.ResumeLayout(false);

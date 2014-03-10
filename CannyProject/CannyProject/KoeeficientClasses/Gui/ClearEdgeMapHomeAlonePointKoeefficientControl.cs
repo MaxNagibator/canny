@@ -7,7 +7,7 @@ namespace CannyProject.KoeeficientClasses.Gui
         public ClearEdgeMapHomeAlonePointKoeefficientControl()
         {
             InitializeComponent();
-            SetName("ClearEdgeMapHomeAlonePointKoeefficients");
+            SetName("ClearEdgeMapHomeAlonePoint");
         }
 
         public ClearEdgeMapHomeAlonePointKoeefficient GetKoeefficients()
