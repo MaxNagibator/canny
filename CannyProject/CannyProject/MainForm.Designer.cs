@@ -36,10 +36,6 @@ namespace CannyProject
             this.toolStripLabel4 = new System.Windows.Forms.ToolStripLabel();
             this.label3 = new System.Windows.Forms.Label();
             this.uiCalcButton = new System.Windows.Forms.Button();
-            this.uiShift2SizeLabel = new System.Windows.Forms.Label();
-            this.uiShift2SizeTextBox = new System.Windows.Forms.TextBox();
-            this.uiShift2Label = new System.Windows.Forms.Label();
-            this.uiShift2TextBox = new System.Windows.Forms.TextBox();
             this.uiSpecialPictureBox = new System.Windows.Forms.PictureBox();
             this.uiGradientPictureBox = new System.Windows.Forms.PictureBox();
             this.uiGnlPictureBox = new System.Windows.Forms.PictureBox();
@@ -47,9 +43,10 @@ namespace CannyProject
             this.uiFinalCannyPictureBox = new System.Windows.Forms.PictureBox();
             this.uiGaussianFilteredImagePictureBox = new System.Windows.Forms.PictureBox();
             this.uiInputImagePictureBox = new System.Windows.Forms.PictureBox();
+            this.uiClearGradientIfOtherNeighborhoodKoeefficientControl = new CannyProject.KoeeficientClasses.Gui.ClearGradientIfOtherNeighborhoodKoeefficientControl();
             this.uiMainKoeefficientControl = new CannyProject.KoeeficientClasses.Gui.MainKoeefficientControl();
             this.uiClearEdgeMapHomeAlonePointKoeefficientControl = new CannyProject.KoeeficientClasses.Gui.ClearEdgeMapHomeAlonePointKoeefficientControl();
-            this.uiClearGradientIfOtherNeighborhoodKoeefficientControl = new CannyProject.KoeeficientClasses.Gui.ClearGradientIfOtherNeighborhoodKoeefficientControl();
+            this.colorKoeefficientControl = new CannyProject.KoeeficientClasses.Gui.ColorKoeefficientControl();
             this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.uiSpecialPictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.uiGradientPictureBox)).BeginInit();
@@ -102,44 +99,6 @@ namespace CannyProject
             this.uiCalcButton.Text = "Canny";
             this.uiCalcButton.UseVisualStyleBackColor = true;
             this.uiCalcButton.Click += new System.EventHandler(this.uiCalcButton_Click);
-            // 
-            // uiShift2SizeLabel
-            // 
-            this.uiShift2SizeLabel.AutoSize = true;
-            this.uiShift2SizeLabel.Location = new System.Drawing.Point(697, 521);
-            this.uiShift2SizeLabel.Name = "uiShift2SizeLabel";
-            this.uiShift2SizeLabel.Size = new System.Drawing.Size(47, 13);
-            this.uiShift2SizeLabel.TabIndex = 80;
-            this.uiShift2SizeLabel.Text = "shift size";
-            this.uiShift2SizeLabel.Visible = false;
-            // 
-            // uiShift2SizeTextBox
-            // 
-            this.uiShift2SizeTextBox.Location = new System.Drawing.Point(700, 537);
-            this.uiShift2SizeTextBox.Name = "uiShift2SizeTextBox";
-            this.uiShift2SizeTextBox.Size = new System.Drawing.Size(41, 20);
-            this.uiShift2SizeTextBox.TabIndex = 79;
-            this.uiShift2SizeTextBox.Text = "3";
-            this.uiShift2SizeTextBox.Visible = false;
-            // 
-            // uiShift2Label
-            // 
-            this.uiShift2Label.AutoSize = true;
-            this.uiShift2Label.Location = new System.Drawing.Point(633, 521);
-            this.uiShift2Label.Name = "uiShift2Label";
-            this.uiShift2Label.Size = new System.Drawing.Size(26, 13);
-            this.uiShift2Label.TabIndex = 78;
-            this.uiShift2Label.Text = "shift";
-            this.uiShift2Label.Visible = false;
-            // 
-            // uiShift2TextBox
-            // 
-            this.uiShift2TextBox.Location = new System.Drawing.Point(636, 537);
-            this.uiShift2TextBox.Name = "uiShift2TextBox";
-            this.uiShift2TextBox.Size = new System.Drawing.Size(41, 20);
-            this.uiShift2TextBox.TabIndex = 77;
-            this.uiShift2TextBox.Text = "30";
-            this.uiShift2TextBox.Visible = false;
             // 
             // uiSpecialPictureBox
             // 
@@ -204,9 +163,17 @@ namespace CannyProject
             this.uiInputImagePictureBox.TabIndex = 52;
             this.uiInputImagePictureBox.TabStop = false;
             // 
+            // uiClearGradientIfOtherNeighborhoodKoeefficientControl
+            // 
+            this.uiClearGradientIfOtherNeighborhoodKoeefficientControl.Location = new System.Drawing.Point(825, 259);
+            this.uiClearGradientIfOtherNeighborhoodKoeefficientControl.MinimumSize = new System.Drawing.Size(15, 15);
+            this.uiClearGradientIfOtherNeighborhoodKoeefficientControl.Name = "uiClearGradientIfOtherNeighborhoodKoeefficientControl";
+            this.uiClearGradientIfOtherNeighborhoodKoeefficientControl.Size = new System.Drawing.Size(122, 213);
+            this.uiClearGradientIfOtherNeighborhoodKoeefficientControl.TabIndex = 91;
+            // 
             // uiMainKoeefficientControl
             // 
-            this.uiMainKoeefficientControl.Location = new System.Drawing.Point(566, 256);
+            this.uiMainKoeefficientControl.Location = new System.Drawing.Point(666, 259);
             this.uiMainKoeefficientControl.MinimumSize = new System.Drawing.Size(15, 15);
             this.uiMainKoeefficientControl.Name = "uiMainKoeefficientControl";
             this.uiMainKoeefficientControl.Size = new System.Drawing.Size(153, 217);
@@ -214,34 +181,31 @@ namespace CannyProject
             // 
             // uiClearEdgeMapHomeAlonePointKoeefficientControl
             // 
-            this.uiClearEdgeMapHomeAlonePointKoeefficientControl.Location = new System.Drawing.Point(871, 256);
+            this.uiClearEdgeMapHomeAlonePointKoeefficientControl.Location = new System.Drawing.Point(971, 259);
             this.uiClearEdgeMapHomeAlonePointKoeefficientControl.MinimumSize = new System.Drawing.Size(15, 15);
             this.uiClearEdgeMapHomeAlonePointKoeefficientControl.Name = "uiClearEdgeMapHomeAlonePointKoeefficientControl";
-            this.uiClearEdgeMapHomeAlonePointKoeefficientControl.Size = new System.Drawing.Size(243, 217);
+            this.uiClearEdgeMapHomeAlonePointKoeefficientControl.Size = new System.Drawing.Size(128, 229);
             this.uiClearEdgeMapHomeAlonePointKoeefficientControl.TabIndex = 89;
             // 
-            // uiClearGradientIfOtherNeighborhoodKoeefficientControl
+            // colorKoeefficientControl1
             // 
-            this.uiClearGradientIfOtherNeighborhoodKoeefficientControl.Location = new System.Drawing.Point(725, 256);
-            this.uiClearGradientIfOtherNeighborhoodKoeefficientControl.MinimumSize = new System.Drawing.Size(15, 15);
-            this.uiClearGradientIfOtherNeighborhoodKoeefficientControl.Name = "uiClearGradientIfOtherNeighborhoodKoeefficientControl";
-            this.uiClearGradientIfOtherNeighborhoodKoeefficientControl.Size = new System.Drawing.Size(140, 213);
-            this.uiClearGradientIfOtherNeighborhoodKoeefficientControl.TabIndex = 91;
+            this.colorKoeefficientControl.Location = new System.Drawing.Point(974, 494);
+            this.colorKoeefficientControl.MinimumSize = new System.Drawing.Size(15, 15);
+            this.colorKoeefficientControl.Name = "colorKoeefficientControl";
+            this.colorKoeefficientControl.Size = new System.Drawing.Size(125, 150);
+            this.colorKoeefficientControl.TabIndex = 92;
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1124, 698);
+            this.Controls.Add(this.colorKoeefficientControl);
             this.Controls.Add(this.uiClearGradientIfOtherNeighborhoodKoeefficientControl);
             this.Controls.Add(this.uiMainKoeefficientControl);
             this.Controls.Add(this.uiClearEdgeMapHomeAlonePointKoeefficientControl);
             this.Controls.Add(this.uiSpecialPictureBox);
             this.Controls.Add(this.uiGradientPictureBox);
-            this.Controls.Add(this.uiShift2SizeLabel);
-            this.Controls.Add(this.uiShift2SizeTextBox);
-            this.Controls.Add(this.uiShift2Label);
-            this.Controls.Add(this.uiShift2TextBox);
             this.Controls.Add(this.uiGnlPictureBox);
             this.Controls.Add(this.uiGnhPictureBox);
             this.Controls.Add(this.uiCalcButton);
@@ -279,15 +243,12 @@ namespace CannyProject
         private System.Windows.Forms.Button uiCalcButton;
         private System.Windows.Forms.PictureBox uiGnhPictureBox;
         private System.Windows.Forms.PictureBox uiGnlPictureBox;
-        private System.Windows.Forms.Label uiShift2SizeLabel;
-        private System.Windows.Forms.TextBox uiShift2SizeTextBox;
-        private System.Windows.Forms.Label uiShift2Label;
-        private System.Windows.Forms.TextBox uiShift2TextBox;
         private System.Windows.Forms.PictureBox uiGradientPictureBox;
         private System.Windows.Forms.PictureBox uiSpecialPictureBox;
         private ClearEdgeMapHomeAlonePointKoeefficientControl uiClearEdgeMapHomeAlonePointKoeefficientControl;
         private MainKoeefficientControl uiMainKoeefficientControl;
         private ClearGradientIfOtherNeighborhoodKoeefficientControl uiClearGradientIfOtherNeighborhoodKoeefficientControl;
+        private ColorKoeefficientControl colorKoeefficientControl;
     }
 }
 

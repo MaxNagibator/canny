@@ -60,6 +60,13 @@
       <DependentUpon>ClearGradientIfOtherNeighborhoodKoeefficientControl.cs</DependentUpon>
     </Compile>
     <Compile Include="KoeeficientClasses\ClearGradientIfOtherNeighborhoodKoeefficient.cs" />
+    <Compile Include="KoeeficientClasses\Gui\ColorKoeefficientControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="KoeeficientClasses\Gui\ColorKoeefficientControl.designer.cs">
+      <DependentUpon>ColorKoeefficientControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="KoeeficientClasses\ColorKoeefficient.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -86,6 +93,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="KoeeficientClasses\Gui\ClearGradientIfOtherNeighborhoodKoeefficientControl.resx">
       <DependentUpon>ClearGradientIfOtherNeighborhoodKoeefficientControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="KoeeficientClasses\Gui\ColorKoeefficientControl.resx">
+      <DependentUpon>ColorKoeefficientControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>

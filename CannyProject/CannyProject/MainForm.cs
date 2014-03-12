@@ -58,15 +58,21 @@ namespace CannyProject
                     uiClearGradientIfOtherNeighborhoodKoeefficientControl.GetKoeefficients();
                 var clearEdgeMapHomeAlonePointKoeefficient =
                     uiClearEdgeMapHomeAlonePointKoeefficientControl.GetKoeefficients();
-                var cannyData = new Canny((Bitmap) uiInputImagePictureBox.Image, mainKoeefficient,
+                var colorKoeefficient = colorKoeefficientControl.GetKoeefficients();
+                var cannyData = new Canny((Bitmap) uiInputImagePictureBox.Image,
+                                          mainKoeefficient,
                                           clearGradientIfOtherNeighborhoodKoeefficient,
-                                          clearEdgeMapHomeAlonePointKoeefficient);
+                                          clearEdgeMapHomeAlonePointKoeefficient,
+                                          colorKoeefficient);
                 uiGaussianFilteredImagePictureBox.Image = cannyData.GetDisplayedImage(cannyData.GaussianFilterImage);
                 uiFinalCannyPictureBox.Image = cannyData.GetDisplayedImage(cannyData.EdgeMap);
                 uiGnhPictureBox.Image = cannyData.GetDisplayedImage(cannyData.GNH);
                 uiGnlPictureBox.Image = cannyData.GetDisplayedImage(cannyData.GNL);
                 uiGradientPictureBox.Image = cannyData.GetDisplayedImage(cannyData.Gradient);
-                uiSpecialPictureBox.Image = cannyData.GetDisplayedImage(cannyData.SpecialMatrix);
+                if(clearGradientIfOtherNeighborhoodKoeefficient.IsNeedApply)
+                {
+                    uiSpecialPictureBox.Image = cannyData.GetDisplayedImage(cannyData.SpecialMatrix);
+                }
                 var a = fileName.Substring(0, fileName.LastIndexOf('\\') + 1) + "canny_" +
                         fileName.Substring(fileName.LastIndexOf('\\') + 1);
                 uiFinalCannyPictureBox.Image.Save(a);

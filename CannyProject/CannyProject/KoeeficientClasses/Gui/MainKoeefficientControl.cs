@@ -14,10 +14,10 @@ namespace CannyProject.KoeeficientClasses.Gui
         {
             var k = new MainKoeefficient
                     {
-                        maxHysteresisThresh = (float) Convert.ToDouble(uiHighThresholdTextBox.Text),
-                        minHysteresisThresh = (float) Convert.ToDouble(uiLowThresholdTextBox.Text),
-                        kernelSize = Convert.ToInt32(uiGaussianMaskSizeTextBox.Text),
-                        sigma = (float) Convert.ToDouble(uiSigmaTextBox.Text),
+                        MaxHysteresisThresh = (float) Convert.ToDouble(uiHighThresholdTextBox.Text),
+                        MinHysteresisThresh = (float) Convert.ToDouble(uiLowThresholdTextBox.Text),
+                        KernelSize = Convert.ToInt32(uiGaussianMaskSizeTextBox.Text),
+                        Sigma = (float) Convert.ToDouble(uiSigmaTextBox.Text),
                     };
             return k;
         }
