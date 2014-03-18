@@ -26,10 +26,10 @@ namespace CannyProject
         public int[,] VisitedMap;
         public float[,] SpecialMatrix;
         public float[,] SpecialMatrix2;
-        private MainKoeefficient _mainKoeefficient;
-        private ClearEdgeMapHomeAlonePointKoeefficient _clearEdgeMapHomeAlonePointKoeefficient;
-        private ClearGradientIfOtherNeighborhoodKoeefficient _clearGradientIfOtherNeighborhoodKoeefficient;
-        private ColorKoeefficient _colorKoeefficient;
+        private readonly MainKoeefficient _mainKoeefficient;
+        private readonly ClearEdgeMapHomeAlonePointKoeefficient _clearEdgeMapHomeAlonePointKoeefficient;
+        private readonly ClearGradientIfOtherNeighborhoodKoeefficient _clearGradientIfOtherNeighborhoodKoeefficient;
+        private readonly ColorKoeefficient _colorKoeefficient;
 
         public Canny(Bitmap inputImage,
                         MainKoeefficient mainKoeefficient,
@@ -43,8 +43,73 @@ namespace CannyProject
             _colorKoeefficient = colorKoeefficient;
             SetGaussianAndCannyParameters(inputImage, mainKoeefficient.MaxHysteresisThresh,
                                           mainKoeefficient.MinHysteresisThresh);
-            ReadImage();
-            DetectCannyEdges();
+            Execute();
+        }
+
+        private void Execute()
+        {
+            var edgeMap = MyTestColorExecute(ObjInputImage);
+            EdgeMap = edgeMap;
+        }
+
+        private int[,] MyTestColorExecute(Bitmap objInputImage)
+        {
+            if (_colorKoeefficient.IsNeedApply)
+            {
+                var outEdgeMap = new int[objInputImage.Width, objInputImage.Height];
+                var edgeMap1 = new int[objInputImage.Width, objInputImage.Height];
+                var edgeMap2 = new int[objInputImage.Width, objInputImage.Height];
+                var edgeMap3 = new int[objInputImage.Width, objInputImage.Height];
+                if (_colorKoeefficient.IsNeedRed)
+                {
+                    var greyImage1 = Test(objInputImage, true, false, false);
+                    var readImage = ReadImage(greyImage1, 1);
+                    edgeMap1 = DetectCannyEdges(readImage);
+                }
+                if (_colorKoeefficient.IsNeedGreen)
+                {
+                    var greyImage2 = Test(objInputImage, false, true, false);
+                    var readImage = ReadImage(greyImage2, 1);
+                    edgeMap2 = DetectCannyEdges(readImage);
+                }
+                if (_colorKoeefficient.IsNeedBlue)
+                {
+                    var greyImage3 = Test(objInputImage, false, false, true);
+                    var readImage = ReadImage(greyImage3,1);
+                    edgeMap3 = DetectCannyEdges(readImage);
+                }
+                for (int i = 0; i < objInputImage.Width; i++)
+                {
+                    for (int j = 0; j < objInputImage.Height; j++)
+                    {
+                        var sum = edgeMap1[i, j] + edgeMap2[i, j] + edgeMap3[i, j];
+                        outEdgeMap[i, j] = sum > 0 ? 255 : 0;
+                    }
+                }
+                return outEdgeMap;
+            }
+
+            var greyImage = ReadImage(objInputImage);
+            return DetectCannyEdges(greyImage);
+        }
+
+        private Bitmap Test(Bitmap image, bool isNeedRed, bool isNeedGreen, bool isNeedBlue)
+        {
+            var outputImage = new Bitmap(image.Width, image.Height);
+            for (int i = 0; i < outputImage.Width; i++)
+            {
+                for (int j = 0; j < outputImage.Height; j++)
+                {
+                    //get the pixel from the scrBitmap image
+
+                    var actulaColor = image.GetPixel(i, j);
+                    int r = isNeedRed ? actulaColor.R : 0;
+                    int g = isNeedGreen ? actulaColor.G : 0;
+                    int b = isNeedBlue ? actulaColor.B : 0;
+                    outputImage.SetPixel(i, j, Color.FromArgb(r, g, b));
+                }
+            }
+            return outputImage;
         }
 
         private void SetGaussianAndCannyParameters(Bitmap inputImage, float maxHysteresisThresh,
@@ -53,18 +118,20 @@ namespace CannyProject
             _maxHysteresisThresh = maxHysteresisThresh;
             _minHysteresisThresh = minHysteresisThresh;
             ObjInputImage = inputImage;
-            EdgeMap = new int[ObjInputImage.Width,ObjInputImage.Height];
-            VisitedMap = new int[ObjInputImage.Width,ObjInputImage.Height];
         }
 
-        public Bitmap GetDisplayedImage(int[,] greyImage)
+        public Bitmap GetDisplayedImage(int[,] dispImage)
         {
-            int width = greyImage.GetLength(0);
-            int height = greyImage.GetLength(1);
-            return GetDisplayedImage(greyImage, width, height);
+            if(dispImage == null)
+            {
+                return null;
+            }
+            int width = dispImage.GetLength(0);
+            int height = dispImage.GetLength(1);
+            return GetDisplayedImage(dispImage, width, height);
         }
 
-        private Bitmap GetDisplayedImage(int[,] greyImage, int width, int height)
+        private Bitmap GetDisplayedImage(int[,] dispImage, int width, int height)
         {
             var image = new Bitmap(width, height);
             BitmapData bitmapData1 = image.LockBits(new Rectangle(0, 0, width, height),
@@ -76,9 +143,9 @@ namespace CannyProject
                 {
                     for (var j = 0; j < bitmapData1.Width; j++)
                     {
-                        imagePointer1[0] = (byte) greyImage[j, i];
-                        imagePointer1[1] = (byte) greyImage[j, i];
-                        imagePointer1[2] = (byte) greyImage[j, i];
+                        imagePointer1[0] = (byte) dispImage[j, i];
+                        imagePointer1[1] = (byte) dispImage[j, i];
+                        imagePointer1[2] = (byte) dispImage[j, i];
                         imagePointer1[3] = 255;
                         imagePointer1 += 4;
                     }
@@ -89,14 +156,18 @@ namespace CannyProject
             return image;
         }
 
-        public Bitmap GetDisplayedImage(float[,] greyImage)
+        public Bitmap GetDisplayedImage(float[,] dispImage)
         {
-            int width = greyImage.GetLength(0);
-            int height = greyImage.GetLength(1);
-            return GetDisplayedImage(greyImage, width, height);
+            if (dispImage == null)
+            {
+                return null;
+            }
+            int width = dispImage.GetLength(0);
+            int height = dispImage.GetLength(1);
+            return GetDisplayedImage(dispImage, width, height);
         }
 
-        private Bitmap GetDisplayedImage(float[,] greyImage, int width, int height)
+        private Bitmap GetDisplayedImage(float[,] dispImage, int width, int height)
         {
             var image = new Bitmap(width, height);
             BitmapData bitmapData1 = image.LockBits(new Rectangle(0, 0, width, height),
@@ -108,9 +179,9 @@ namespace CannyProject
                 {
                     for (var j = 0; j < bitmapData1.Width; j++)
                     {
-                        imagePointer1[0] = (byte) greyImage[j, i];
-                        imagePointer1[1] = (byte) greyImage[j, i];
-                        imagePointer1[2] = (byte) greyImage[j, i];
+                        imagePointer1[0] = (byte) dispImage[j, i];
+                        imagePointer1[1] = (byte) dispImage[j, i];
+                        imagePointer1[2] = (byte) dispImage[j, i];
                         imagePointer1[3] = 255;
                         imagePointer1 += 4;
                     }
@@ -121,28 +192,10 @@ namespace CannyProject
             return image;
         }
 
-        private void ReadImage()
-        {            
-            GreyImage = new int[ObjInputImage.Width, ObjInputImage.Height]; //[Row,Column]
-      
-            Bitmap image = ObjInputImage;
-            if (_colorKoeefficient.IsNeedApply)
-            {
-                for (int i = 0; i < image.Width; i++)
-                {
-                    for (int j = 0; j < image.Height; j++)
-                    {
-                        //get the pixel from the scrBitmap image
-
-                        var actulaColor = image.GetPixel(i, j);
-                        int r = _colorKoeefficient.IsNeedRed ? actulaColor.R : 0;
-                        int g = _colorKoeefficient.IsNeedGreen ? actulaColor.G : 0;
-                        int b = _colorKoeefficient.IsNeedBlue ? actulaColor.B : 0;
-                        image.SetPixel(i, j, Color.FromArgb(r, g,b));
-                    }
-                }      
-            }
-            BitmapData bitmapData1 = image.LockBits(new Rectangle(0, 0, image.Width, image.Height),
+        private int[,] ReadImage(Bitmap objInputImage, int colorCount = 3)
+        {
+            var greyImage = new int[objInputImage.Width, objInputImage.Height];
+            BitmapData bitmapData1 = objInputImage.LockBits(new Rectangle(0, 0, objInputImage.Width, objInputImage.Height),
                                                     ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
             unsafe
             {
@@ -151,19 +204,20 @@ namespace CannyProject
                 {
                     for (var j = 0; j < bitmapData1.Width; j++)
                     {
-                        GreyImage[j, i] = (int)((imagePointer1[0] + imagePointer1[1] + imagePointer1[2]) / 3.0);
+                        greyImage[j, i] = (int)((imagePointer1[0] + imagePointer1[1] + imagePointer1[2]) / colorCount);
                         imagePointer1 += 4;
                     }
                     imagePointer1 += bitmapData1.Stride - (bitmapData1.Width * 4);
                 }
             }
-            image.UnlockBits(bitmapData1);
+            objInputImage.UnlockBits(bitmapData1);
+            return greyImage;
         }
 
-        private void DetectCannyEdges()
+        private int[,] DetectCannyEdges(int[,] greyImage)
         {
             PostHysteresis = new int[ObjInputImage.Width,ObjInputImage.Height];
-            GaussianFilterImage = GetGaussianFilterImage();
+            GaussianFilterImage = GetGaussianFilterImage(greyImage);
             float[,] derivativeX = GetDifferentiateX(GaussianFilterImage);
             float[,] derivativeY = GetDifferentiateY(GaussianFilterImage);
             Gradient = ComputeGradientByDerivativesXY(derivativeX, derivativeY);
@@ -194,18 +248,19 @@ namespace CannyProject
             }
 
             SetGnhGnlEdgePoints(limit);
-            HysterisisThresholding(_edgePoints);
-            SetEdgeMap255();
-            ClearEdgeMapHomeAlonePoint();
+            var edgeMap = HysterisisThresholding(_edgePoints);
+            edgeMap = SetEdgeMap255(edgeMap);
+            edgeMap = ClearEdgeMapHomeAlonePoint(edgeMap);
+            return edgeMap;
         }
 
-        private int[,] GetGaussianFilterImage()
+        private int[,] GetGaussianFilterImage(int[,] greyImage)
         {
             int kernelWeight;
             var gaussianKernel = GetGaussianKernel(_mainKoeefficient.KernelSize, _mainKoeefficient.Sigma,
                                                    out kernelWeight);
             int limit = _mainKoeefficient.KernelSize/2;
-            int[,] output = GreyImage;
+            int[,] output = greyImage;
 
             for (var i = limit; i <= ((ObjInputImage.Width - 1) - limit); i++)
             {
@@ -216,7 +271,7 @@ namespace CannyProject
                     {
                         for (var l = -limit; l < limit; l++)
                         {
-                            sum = sum + ((float) GreyImage[i + k, j + l]*gaussianKernel[limit + k, limit + l]);
+                            sum = sum + ((float)greyImage[i + k, j + l] * gaussianKernel[limit + k, limit + l]);
                         }
                     }
                     output[i, j] = (int) (Math.Round(sum/kernelWeight));
@@ -501,36 +556,40 @@ namespace CannyProject
             }
         }
 
-        private void HysterisisThresholding(int[,] edges)
+        private int[,] HysterisisThresholding(int[,] edges)
         {
             int limit = _mainKoeefficient.KernelSize/2;
+            var edgeMap = new int[ObjInputImage.Width, ObjInputImage.Height];
+            VisitedMap = new int[ObjInputImage.Width, ObjInputImage.Height];
             for (var i = limit; i <= (ObjInputImage.Width - 1) - limit; i++)
             {
                 for (var j = limit; j <= (ObjInputImage.Height - 1) - limit; j++)
                 {
                     if (edges[i, j] == 1)
                     {
-                        EdgeMap[i, j] = 1;
-                        Travers(i, j);
+                        edgeMap[i, j] = 1;
+                        Travers(edgeMap,i, j);
                         VisitedMap[i, j] = 1;
                     }
                 }
             }
+            return edgeMap;
         }
 
-        private void SetEdgeMap255()
+        private int[,] SetEdgeMap255(int[,] edgeMap)
         {
             for (var i = 0; i <= (ObjInputImage.Width - 1); i++)
             {
                 for (var j = 0; j <= (ObjInputImage.Height - 1); j++)
                 {
-                    EdgeMap[i, j] = EdgeMap[i, j]*255;
+                    edgeMap[i, j] = edgeMap[i, j] * 255;
                 }
             }
+            return edgeMap;
         }
 
 
-        private void Travers(int X, int Y)
+        private void Travers(int[,] edgeMap, int X, int Y)
         {
 
             if (VisitedMap[X, Y] == 1)
@@ -541,17 +600,17 @@ namespace CannyProject
             //1
             if (_edgePoints[X + 1, Y] == 2)
             {
-                EdgeMap[X + 1, Y] = 1;
+                edgeMap[X + 1, Y] = 1;
                 VisitedMap[X + 1, Y] = 1;
-                Travers(X + 1, Y);
+                Travers(edgeMap, X + 1, Y);
                 return;
             }
             //2
             if (_edgePoints[X + 1, Y - 1] == 2)
             {
-                EdgeMap[X + 1, Y - 1] = 1;
+                edgeMap[X + 1, Y - 1] = 1;
                 VisitedMap[X + 1, Y - 1] = 1;
-                Travers(X + 1, Y - 1);
+                Travers(edgeMap, X + 1, Y - 1);
                 return;
             }
 
@@ -559,9 +618,9 @@ namespace CannyProject
 
             if (_edgePoints[X, Y - 1] == 2)
             {
-                EdgeMap[X, Y - 1] = 1;
+                edgeMap[X, Y - 1] = 1;
                 VisitedMap[X, Y - 1] = 1;
-                Travers(X, Y - 1);
+                Travers(edgeMap, X, Y - 1);
                 return;
             }
 
@@ -569,81 +628,74 @@ namespace CannyProject
 
             if (_edgePoints[X - 1, Y - 1] == 2)
             {
-                EdgeMap[X - 1, Y - 1] = 1;
+                edgeMap[X - 1, Y - 1] = 1;
                 VisitedMap[X - 1, Y - 1] = 1;
-                Travers(X - 1, Y - 1);
+                Travers(edgeMap, X - 1, Y - 1);
                 return;
             }
             //5
             if (_edgePoints[X - 1, Y] == 2)
             {
-                EdgeMap[X - 1, Y] = 1;
+                edgeMap[X - 1, Y] = 1;
                 VisitedMap[X - 1, Y] = 1;
-                Travers(X - 1, Y);
+                Travers(edgeMap, X - 1, Y);
                 return;
             }
             //6
             if (_edgePoints[X - 1, Y + 1] == 2)
             {
-                EdgeMap[X - 1, Y + 1] = 1;
+                edgeMap[X - 1, Y + 1] = 1;
                 VisitedMap[X - 1, Y + 1] = 1;
-                Travers(X - 1, Y + 1);
+                Travers(edgeMap, X - 1, Y + 1);
                 return;
             }
             //7
             if (_edgePoints[X, Y + 1] == 2)
             {
-                EdgeMap[X, Y + 1] = 1;
+                edgeMap[X, Y + 1] = 1;
                 VisitedMap[X, Y + 1] = 1;
-                Travers(X, Y + 1);
+                Travers(edgeMap, X, Y + 1);
                 return;
             }
             //8
 
             if (_edgePoints[X + 1, Y + 1] == 2)
             {
-                EdgeMap[X + 1, Y + 1] = 1;
+                edgeMap[X + 1, Y + 1] = 1;
                 VisitedMap[X + 1, Y + 1] = 1;
-                Travers(X + 1, Y + 1);
+                Travers(edgeMap, X + 1, Y + 1);
                 return;
             }
 
             //VisitedMap[X, Y] = 1;
-            return;
+            //return edgeMap;
         }
 
-        private void ClearEdgeMapHomeAlonePoint()
+        private int[,] ClearEdgeMapHomeAlonePoint(int[,] edgeMap)
         {
             if (!_clearEdgeMapHomeAlonePointKoeefficient.IsNeedApply)
             {
-                return;
+                return edgeMap;
             }
 
             var temp = new int[ObjInputImage.Width,ObjInputImage.Height];
-            for (var i = 0; i <= (ObjInputImage.Width - 1); i++)
-            {
-                for (var j = 0; j <= (ObjInputImage.Height - 1); j++)
-                {
-                    temp[i, j] = 0;
-                }
-            }
             var width = _clearEdgeMapHomeAlonePointKoeefficient.Width;
             var height = _clearEdgeMapHomeAlonePointKoeefficient.Height;
             var step = _clearEdgeMapHomeAlonePointKoeefficient.Step;
             var count = _clearEdgeMapHomeAlonePointKoeefficient.Count;
 
-            for (var i = 0 + width; i <= (EdgeMap.GetLength(0) - 1) - width; i += step)
+            for (var i = 0 + width; i <= (edgeMap.GetLength(0) - 1) - width; i += step)
             {
-                for (var j = 0 + height; j <= (EdgeMap.GetLength(1) - 1) - height; j += step)
+                for (var j = 0 + height; j <= (edgeMap.GetLength(1) - 1) - height; j += step)
                 {
-                    if (EdgeMap[i, j] == 255)
+                    if (edgeMap[i, j] == 255)
                     {
                         float total = 0;
                         for (var si = i - width; si <= i + width; si++)
                         {
                             for (var sj = j - width; sj <= j + height; sj++)
                             {
-                                total += EdgeMap[si, sj];
+                                total += edgeMap[si, sj];
                             }
                         }
                         if (total < 255*count)
@@ -660,10 +712,11 @@ namespace CannyProject
                 {
                     if (temp[i, j] == 1)
                     {
-                        EdgeMap[i, j] = 0;
+                        edgeMap[i, j] = 0;
                     }
                 }
             }
+            return edgeMap;
         }
     }
 }
