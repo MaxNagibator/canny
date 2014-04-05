@@ -7,8 +7,7 @@ namespace CannyProject
 {
     public partial class MainForm : Form
     {
-        private bool _switcher = true;
-        private string[] fileNames;
+        private string[] _fileNames;
 
         public MainForm()
         {
@@ -30,7 +29,7 @@ namespace CannyProject
             {
                 try
                 {
-                    fileNames = ofd.FileNames;
+                    _fileNames = ofd.FileNames;
                     Calculate();
                 }
                 catch (Exception ex)
@@ -44,22 +43,22 @@ namespace CannyProject
         {
             var imagePath = "..\\..\\..\\..\\..\\canny\\Images\\x_e7da9276.jpg";
             uiInputImagePictureBox.Image = Image.FromFile(imagePath);
-            fileNames = new[] {imagePath};
+            _fileNames = new[] {imagePath};
         }
 
         private void Calculate()
         {
-            foreach (var fileName in fileNames)
+            var mainKoeefficient = uiMainKoeefficientControl.GetKoeefficients();
+            var clearGradientIfOtherNeighborhoodKoeefficient =
+                uiClearGradientIfOtherNeighborhoodKoeefficientControl.GetKoeefficients();
+            var clearEdgeMapHomeAlonePointKoeefficient =
+                uiClearEdgeMapHomeAlonePointKoeefficientControl.GetKoeefficients();
+            var colorKoeefficient = colorKoeefficientControl.GetKoeefficients();
+            if (_fileNames.Length == 2)
             {
-                uiInputImagePictureBox.Image = Image.FromFile(fileName);
-                _switcher = !_switcher;
-                var mainKoeefficient = uiMainKoeefficientControl.GetKoeefficients();
-                var clearGradientIfOtherNeighborhoodKoeefficient =
-                    uiClearGradientIfOtherNeighborhoodKoeefficientControl.GetKoeefficients();
-                var clearEdgeMapHomeAlonePointKoeefficient =
-                    uiClearEdgeMapHomeAlonePointKoeefficientControl.GetKoeefficients();
-                var colorKoeefficient = colorKoeefficientControl.GetKoeefficients();
-                var cannyData = new Canny((Bitmap) uiInputImagePictureBox.Image,
+                uiInputImagePictureBox.Image = Image.FromFile(_fileNames[0]);
+                var cannyData = new Canny((Bitmap) uiInputImagePictureBox.Image, 
+                                          (Bitmap) (Image.FromFile(_fileNames[1])),
                                           mainKoeefficient,
                                           clearGradientIfOtherNeighborhoodKoeefficient,
                                           clearEdgeMapHomeAlonePointKoeefficient,
@@ -69,13 +68,37 @@ namespace CannyProject
                 uiGnhPictureBox.Image = cannyData.GetDisplayedImage(cannyData.GNH);
                 uiGnlPictureBox.Image = cannyData.GetDisplayedImage(cannyData.GNL);
                 uiGradientPictureBox.Image = cannyData.GetDisplayedImage(cannyData.Gradient);
-                if(clearGradientIfOtherNeighborhoodKoeefficient.IsNeedApply)
+                //if (clearGradientIfOtherNeighborhoodKoeefficient.IsNeedApply)
                 {
-                    uiSpecialPictureBox.Image = cannyData.GetDisplayedImage(cannyData.SpecialMatrix);
+                    uiSpecialPictureBox.Image = cannyData.GetDisplayedImage(cannyData.DeffirentBeetweenTwoImagesMatrix);
                 }
-                var a = fileName.Substring(0, fileName.LastIndexOf('\\') + 1) + "canny_" +
-                        fileName.Substring(fileName.LastIndexOf('\\') + 1);
+                var a = _fileNames[0].Substring(0, _fileNames[0].LastIndexOf('\\') + 1) + "canny_" +
+                        _fileNames[0].Substring(_fileNames[0].LastIndexOf('\\') + 1);
                 uiFinalCannyPictureBox.Image.Save(a);
+            }
+            else
+            {
+                foreach (var fileName in _fileNames)
+                {
+                    uiInputImagePictureBox.Image = Image.FromFile(fileName);
+                    var cannyData = new Canny((Bitmap) uiInputImagePictureBox.Image,
+                                              mainKoeefficient,
+                                              clearGradientIfOtherNeighborhoodKoeefficient,
+                                              clearEdgeMapHomeAlonePointKoeefficient,
+                                              colorKoeefficient);
+                    uiGaussianFilteredImagePictureBox.Image = cannyData.GetDisplayedImage(cannyData.GaussianFilterImage);
+                    uiFinalCannyPictureBox.Image = cannyData.GetDisplayedImage(cannyData.EdgeMap);
+                    uiGnhPictureBox.Image = cannyData.GetDisplayedImage(cannyData.GNH);
+                    uiGnlPictureBox.Image = cannyData.GetDisplayedImage(cannyData.GNL);
+                    uiGradientPictureBox.Image = cannyData.GetDisplayedImage(cannyData.Gradient);
+                    if (clearGradientIfOtherNeighborhoodKoeefficient.IsNeedApply)
+                    {
+                        uiSpecialPictureBox.Image = cannyData.GetDisplayedImage(cannyData.SpecialMatrix);
+                    }
+                    var a = fileName.Substring(0, fileName.LastIndexOf('\\') + 1) + "canny_" +
+                            fileName.Substring(fileName.LastIndexOf('\\') + 1);
+                    uiFinalCannyPictureBox.Image.Save(a);
+                }
             }
         }
 
