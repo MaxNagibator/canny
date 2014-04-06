@@ -31,22 +31,7 @@ namespace CannyProject
         private readonly ClearEdgeMapHomeAlonePointKoeefficient _clearEdgeMapHomeAlonePointKoeefficient;
         private readonly ClearGradientIfOtherNeighborhoodKoeefficient _clearGradientIfOtherNeighborhoodKoeefficient;
         private readonly ColorKoeefficient _colorKoeefficient;
-        private Bitmap _twoInputImage;
-
-        public Canny(Bitmap inputImage,
-            MainKoeefficient mainKoeefficient,
-             ClearGradientIfOtherNeighborhoodKoeefficient clearGradientIfOtherNeighborhoodKoeefficient,
-             ClearEdgeMapHomeAlonePointKoeefficient clearEdgeMapHomeAlonePointKoeefficient,
-             ColorKoeefficient colorKoeefficient)
-        {
-            _clearEdgeMapHomeAlonePointKoeefficient = clearEdgeMapHomeAlonePointKoeefficient;
-            _clearGradientIfOtherNeighborhoodKoeefficient = clearGradientIfOtherNeighborhoodKoeefficient;
-            _mainKoeefficient = mainKoeefficient;
-            _colorKoeefficient = colorKoeefficient;
-            SetGaussianAndCannyParameters(inputImage, mainKoeefficient.MaxHysteresisThresh,
-                                          mainKoeefficient.MinHysteresisThresh);
-            Execute();
-        }
+        private readonly Bitmap _twoInputImage;
 
         public Canny(Bitmap inputImage, Bitmap twoInputImage,
                     MainKoeefficient mainKoeefficient,
@@ -106,14 +91,17 @@ namespace CannyProject
                 }
                 return outEdgeMap;
             }
-            DeffirentBeetweenTwoImagesMatrix = new int[objInputImage.Width,ObjInputImage.Height];
-            for (int i = 0; i < objInputImage.Width; i++)
+            if (_twoInputImage != null)
             {
-                for (int j = 0; j < objInputImage.Height; j++)
+                DeffirentBeetweenTwoImagesMatrix = new int[objInputImage.Width,ObjInputImage.Height];
+                for (int i = 0; i < objInputImage.Width; i++)
                 {
-                    if (objInputImage.GetPixel(i, j) != _twoInputImage.GetPixel(i, j))
+                    for (int j = 0; j < objInputImage.Height; j++)
                     {
-                        DeffirentBeetweenTwoImagesMatrix[i, j] = 255;
+                        if (objInputImage.GetPixel(i, j) != _twoInputImage.GetPixel(i, j))
+                        {
+                            DeffirentBeetweenTwoImagesMatrix[i, j] = 255;
+                        }
                     }
                 }
             }
@@ -249,7 +237,10 @@ namespace CannyProject
             float[,] derivativeX = GetDifferentiateX(GaussianFilterImage);
             float[,] derivativeY = GetDifferentiateY(GaussianFilterImage);
             Gradient = ComputeGradientByDerivativesXY(derivativeX, derivativeY);
-            Gradient = MyTestChangeGradientTwoImage(Gradient);
+            if (_twoInputImage != null)
+            {
+                Gradient = MyTestChangeGradientTwoImage(Gradient);
+            }
             NonMax = PerformNonMaximumSuppression(Gradient);
 
 
