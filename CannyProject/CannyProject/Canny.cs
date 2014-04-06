@@ -26,17 +26,20 @@ namespace CannyProject
         public int[,] VisitedMap;
         public float[,] SpecialMatrix;
         public float[,] SpecialMatrix2;
+        public int[,] DeffirentBeetweenTwoImagesMatrix;
         private readonly MainKoeefficient _mainKoeefficient;
         private readonly ClearEdgeMapHomeAlonePointKoeefficient _clearEdgeMapHomeAlonePointKoeefficient;
         private readonly ClearGradientIfOtherNeighborhoodKoeefficient _clearGradientIfOtherNeighborhoodKoeefficient;
         private readonly ColorKoeefficient _colorKoeefficient;
+        private readonly Bitmap _twoInputImage;
 
-        public Canny(Bitmap inputImage,
-                        MainKoeefficient mainKoeefficient,
+        public Canny(Bitmap inputImage, Bitmap twoInputImage,
+                    MainKoeefficient mainKoeefficient,
                      ClearGradientIfOtherNeighborhoodKoeefficient clearGradientIfOtherNeighborhoodKoeefficient,
                      ClearEdgeMapHomeAlonePointKoeefficient clearEdgeMapHomeAlonePointKoeefficient,
                      ColorKoeefficient colorKoeefficient)
         {
+            _twoInputImage = twoInputImage;
             _clearEdgeMapHomeAlonePointKoeefficient = clearEdgeMapHomeAlonePointKoeefficient;
             _clearGradientIfOtherNeighborhoodKoeefficient = clearGradientIfOtherNeighborhoodKoeefficient;
             _mainKoeefficient = mainKoeefficient;
@@ -88,7 +91,20 @@ namespace CannyProject
                 }
                 return outEdgeMap;
             }
-
+            if (_twoInputImage != null)
+            {
+                DeffirentBeetweenTwoImagesMatrix = new int[objInputImage.Width,ObjInputImage.Height];
+                for (int i = 0; i < objInputImage.Width; i++)
+                {
+                    for (int j = 0; j < objInputImage.Height; j++)
+                    {
+                        if (objInputImage.GetPixel(i, j) != _twoInputImage.GetPixel(i, j))
+                        {
+                            DeffirentBeetweenTwoImagesMatrix[i, j] = 255;
+                        }
+                    }
+                }
+            }
             var greyImage = ReadImage(objInputImage);
             return DetectCannyEdges(greyImage);
         }
@@ -221,6 +237,10 @@ namespace CannyProject
             float[,] derivativeX = GetDifferentiateX(GaussianFilterImage);
             float[,] derivativeY = GetDifferentiateY(GaussianFilterImage);
             Gradient = ComputeGradientByDerivativesXY(derivativeX, derivativeY);
+            if (_twoInputImage != null)
+            {
+                Gradient = MyTestChangeGradientTwoImage(Gradient);
+            }
             NonMax = PerformNonMaximumSuppression(Gradient);
 
 
@@ -252,6 +272,21 @@ namespace CannyProject
             edgeMap = SetEdgeMap255(edgeMap);
             edgeMap = ClearEdgeMapHomeAlonePoint(edgeMap);
             return edgeMap;
+        }
+
+        private float[,] MyTestChangeGradientTwoImage(float[,] gradient)
+        {
+            for (int i = 0; i < DeffirentBeetweenTwoImagesMatrix.GetLength(0); i++)
+            {
+                for (int j = 0; j < DeffirentBeetweenTwoImagesMatrix.GetLength(1); j++)
+                {
+                    if (DeffirentBeetweenTwoImagesMatrix[i,j] != 0)
+                    {
+                        gradient[i, j] = gradient[i, j]*3;
+                    }
+                }
+            }
+            return gradient;
         }
 
         private int[,] GetGaussianFilterImage(int[,] greyImage)
