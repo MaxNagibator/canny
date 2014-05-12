@@ -57,7 +57,7 @@ namespace CannyProject
 
         private int[,] MyTestColorExecute(Bitmap objInputImage)
         {
-            if (_colorKoeefficient.IsNeedApply)
+            if (_colorKoeefficient.IsNeedApply && _twoInputImage == null)
             {
                 var outEdgeMap = new int[objInputImage.Width, objInputImage.Height];
                 var edgeMap1 = new int[objInputImage.Width, objInputImage.Height];

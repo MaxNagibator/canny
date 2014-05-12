@@ -70,9 +70,9 @@ namespace CannyProject
                 uiGnhPictureBox.Image = cannyData.GetDisplayedImage(cannyData.GNH);
                 uiGnlPictureBox.Image = cannyData.GetDisplayedImage(cannyData.GNL);
                 uiGradientPictureBox.Image = cannyData.GetDisplayedImage(cannyData.Gradient);
-                if (clearGradientIfOtherNeighborhoodKoeefficient.IsNeedApply)
+                if (twoImage != null)
                 {
-                    uiSpecialPictureBox.Image = cannyData.GetDisplayedImage(cannyData.SpecialMatrix);
+                    uiSpecialPictureBox.Image = cannyData.GetDisplayedImage(cannyData.DeffirentBeetweenTwoImagesMatrix);
                 }
                 var a = fileName.Substring(0, fileName.LastIndexOf('\\') + 1) + "canny_" +
                         fileName.Substring(fileName.LastIndexOf('\\') + 1);
