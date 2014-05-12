@@ -1,4 +1,6 @@
-﻿namespace CannyProject.KoeeficientClasses
+﻿using System;
+
+namespace CannyProject.KoeeficientClasses
 {
     public class MainKoeefficient
     {
@@ -10,3 +12,4 @@
         public float Sigma;
     }
 }
+

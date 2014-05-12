@@ -43,10 +43,11 @@ namespace CannyProject
             this.uiFinalCannyPictureBox = new System.Windows.Forms.PictureBox();
             this.uiGaussianFilteredImagePictureBox = new System.Windows.Forms.PictureBox();
             this.uiInputImagePictureBox = new System.Windows.Forms.PictureBox();
+            this.uiNonMaxPictureBox = new System.Windows.Forms.PictureBox();
+            this.colorKoeefficientControl = new CannyProject.KoeeficientClasses.Gui.ColorKoeefficientControl();
             this.uiClearGradientIfOtherNeighborhoodKoeefficientControl = new CannyProject.KoeeficientClasses.Gui.ClearGradientIfOtherNeighborhoodKoeefficientControl();
             this.uiMainKoeefficientControl = new CannyProject.KoeeficientClasses.Gui.MainKoeefficientControl();
             this.uiClearEdgeMapHomeAlonePointKoeefficientControl = new CannyProject.KoeeficientClasses.Gui.ClearEdgeMapHomeAlonePointKoeefficientControl();
-            this.colorKoeefficientControl = new CannyProject.KoeeficientClasses.Gui.ColorKoeefficientControl();
             this.toolStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.uiSpecialPictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.uiGradientPictureBox)).BeginInit();
@@ -55,6 +56,7 @@ namespace CannyProject
             ((System.ComponentModel.ISupportInitialize)(this.uiFinalCannyPictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.uiGaussianFilteredImagePictureBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.uiInputImagePictureBox)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.uiNonMaxPictureBox)).BeginInit();
             this.SuspendLayout();
             // 
             // toolStrip1
@@ -163,6 +165,23 @@ namespace CannyProject
             this.uiInputImagePictureBox.TabIndex = 52;
             this.uiInputImagePictureBox.TabStop = false;
             // 
+            // pictureBox1
+            // 
+            this.uiNonMaxPictureBox.Location = new System.Drawing.Point(18, 646);
+            this.uiNonMaxPictureBox.Name = "uiNonMaxPictureBox";
+            this.uiNonMaxPictureBox.Size = new System.Drawing.Size(256, 196);
+            this.uiNonMaxPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.uiNonMaxPictureBox.TabIndex = 93;
+            this.uiNonMaxPictureBox.TabStop = false;
+            // 
+            // colorKoeefficientControl
+            // 
+            this.colorKoeefficientControl.Location = new System.Drawing.Point(974, 494);
+            this.colorKoeefficientControl.MinimumSize = new System.Drawing.Size(15, 15);
+            this.colorKoeefficientControl.Name = "colorKoeefficientControl";
+            this.colorKoeefficientControl.Size = new System.Drawing.Size(125, 150);
+            this.colorKoeefficientControl.TabIndex = 92;
+            // 
             // uiClearGradientIfOtherNeighborhoodKoeefficientControl
             // 
             this.uiClearGradientIfOtherNeighborhoodKoeefficientControl.Location = new System.Drawing.Point(825, 259);
@@ -187,19 +206,12 @@ namespace CannyProject
             this.uiClearEdgeMapHomeAlonePointKoeefficientControl.Size = new System.Drawing.Size(128, 229);
             this.uiClearEdgeMapHomeAlonePointKoeefficientControl.TabIndex = 89;
             // 
-            // colorKoeefficientControl1
-            // 
-            this.colorKoeefficientControl.Location = new System.Drawing.Point(974, 494);
-            this.colorKoeefficientControl.MinimumSize = new System.Drawing.Size(15, 15);
-            this.colorKoeefficientControl.Name = "colorKoeefficientControl";
-            this.colorKoeefficientControl.Size = new System.Drawing.Size(125, 150);
-            this.colorKoeefficientControl.TabIndex = 92;
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1124, 698);
+            this.ClientSize = new System.Drawing.Size(1124, 889);
+            this.Controls.Add(this.uiNonMaxPictureBox);
             this.Controls.Add(this.colorKoeefficientControl);
             this.Controls.Add(this.uiClearGradientIfOtherNeighborhoodKoeefficientControl);
             this.Controls.Add(this.uiMainKoeefficientControl);
@@ -226,6 +238,7 @@ namespace CannyProject
             ((System.ComponentModel.ISupportInitialize)(this.uiFinalCannyPictureBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.uiGaussianFilteredImagePictureBox)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.uiInputImagePictureBox)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.uiNonMaxPictureBox)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -249,6 +262,7 @@ namespace CannyProject
         private MainKoeefficientControl uiMainKoeefficientControl;
         private ClearGradientIfOtherNeighborhoodKoeefficientControl uiClearGradientIfOtherNeighborhoodKoeefficientControl;
         private ColorKoeefficientControl colorKoeefficientControl;
+        private System.Windows.Forms.PictureBox uiNonMaxPictureBox;
     }
 }
 

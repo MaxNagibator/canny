@@ -70,6 +70,7 @@ namespace CannyProject
                 uiGnhPictureBox.Image = cannyData.GetDisplayedImage(cannyData.GNH);
                 uiGnlPictureBox.Image = cannyData.GetDisplayedImage(cannyData.GNL);
                 uiGradientPictureBox.Image = cannyData.GetDisplayedImage(cannyData.Gradient);
+                uiNonMaxPictureBox.Image = cannyData.GetDisplayedImage(cannyData.NonMax);
                 if (twoImage != null)
                 {
                     uiSpecialPictureBox.Image = cannyData.GetDisplayedImage(cannyData.DeffirentBeetweenTwoImagesMatrix);
