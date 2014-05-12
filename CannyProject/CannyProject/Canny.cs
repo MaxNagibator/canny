@@ -14,7 +14,6 @@ namespace CannyProject
 
         //Gaussian Kernel Data
         //Canny Edge Detection Parameters
-        private float _maxHysteresisThresh, _minHysteresisThresh;
         public int[,] GaussianFilterImage;
         public float[,] Gradient;
         public float[,] NonMax;
@@ -44,8 +43,7 @@ namespace CannyProject
             _clearGradientIfOtherNeighborhoodKoeefficient = clearGradientIfOtherNeighborhoodKoeefficient;
             _mainKoeefficient = mainKoeefficient;
             _colorKoeefficient = colorKoeefficient;
-            SetGaussianAndCannyParameters(inputImage, mainKoeefficient.MaxHysteresisThresh,
-                                          mainKoeefficient.MinHysteresisThresh);
+            ObjInputImage = inputImage;
             Execute();
         }
 
@@ -65,19 +63,19 @@ namespace CannyProject
                 var edgeMap3 = new int[objInputImage.Width, objInputImage.Height];
                 if (_colorKoeefficient.IsNeedRed)
                 {
-                    var greyImage1 = Test(objInputImage, true, false, false);
+                    var greyImage1 = ChangeColor(objInputImage, true, false, false);
                     var readImage = ReadImage(greyImage1, 1);
                     edgeMap1 = DetectCannyEdges(readImage);
                 }
                 if (_colorKoeefficient.IsNeedGreen)
                 {
-                    var greyImage2 = Test(objInputImage, false, true, false);
+                    var greyImage2 = ChangeColor(objInputImage, false, true, false);
                     var readImage = ReadImage(greyImage2, 1);
                     edgeMap2 = DetectCannyEdges(readImage);
                 }
                 if (_colorKoeefficient.IsNeedBlue)
                 {
-                    var greyImage3 = Test(objInputImage, false, false, true);
+                    var greyImage3 = ChangeColor(objInputImage, false, false, true);
                     var readImage = ReadImage(greyImage3,1);
                     edgeMap3 = DetectCannyEdges(readImage);
                 }
@@ -109,7 +107,7 @@ namespace CannyProject
             return DetectCannyEdges(greyImage);
         }
 
-        private Bitmap Test(Bitmap image, bool isNeedRed, bool isNeedGreen, bool isNeedBlue)
+        private Bitmap ChangeColor(Bitmap image, bool isNeedRed, bool isNeedGreen, bool isNeedBlue)
         {
             var outputImage = new Bitmap(image.Width, image.Height);
             for (int i = 0; i < outputImage.Width; i++)
@@ -126,14 +124,6 @@ namespace CannyProject
                 }
             }
             return outputImage;
-        }
-
-        private void SetGaussianAndCannyParameters(Bitmap inputImage, float maxHysteresisThresh,
-                                                   float minHysteresisThresh)
-        {
-            _maxHysteresisThresh = maxHysteresisThresh;
-            _minHysteresisThresh = minHysteresisThresh;
-            ObjInputImage = inputImage;
         }
 
         public Bitmap GetDisplayedImage(int[,] dispImage)
@@ -320,52 +310,37 @@ namespace CannyProject
             float pi;
             pi = (float) Math.PI;
 
-            var kernel = new float[kernelSize,kernelSize];
-            var gaussianKernel = new int[kernelSize,kernelSize];
+            var kernel = new float[kernelSize, kernelSize];
+            var gaussianKernel = new int[kernelSize, kernelSize];
 
-            float d1 = 1/(2*pi*sigma*sigma);
+            float d1 = 2*pi*sigma*sigma;
             float d2 = 2*sigma*sigma;
-
             float min = 1000;
-
-            for (var i = -kernelSize/2; i < kernelSize/2; i++)
+            var shift = kernelSize/2;
+            for (var i = 0; i < kernelSize; i++)
             {
-                for (var j = -kernelSize/2; j < kernelSize/2; j++)
+                for (var j = 0; j < kernelSize; j++)
                 {
-                    kernel[kernelSize/2 + i, kernelSize/2 + j] = ((1/d1)*(float) Math.Exp(-(i*i + j*j)/d2));
-                    if (kernel[kernelSize/2 + i, kernelSize/2 + j] < min)
-                        min = kernel[kernelSize/2 + i, kernelSize/2 + j];
-
+                    var x = i - shift;
+                    var y = j - shift;
+                    kernel[i, j] =((1/d1)*(float) Math.Exp(-(x*x + y*y)/d2));
+                    if (kernel[i, j] < min)
+                    {
+                        min = kernel[i, j];
+                    }
                 }
             }
             int mult = (int) (1/min);
             int sum = 0;
             if ((min > 0) && (min < 1))
             {
-                for (var i = -kernelSize/2; i < kernelSize/2; i++)
+                for (var i = 0; i < kernelSize; i++)
                 {
-                    for (var j = -kernelSize/2; j < kernelSize/2; j++)
+                    for (var j = 0; j < kernelSize; j++)
                     {
-                        kernel[kernelSize/2 + i, kernelSize/2 + j] =
-                            (float) Math.Round(kernel[kernelSize/2 + i, kernelSize/2 + j]*mult, 0);
-                        gaussianKernel[kernelSize/2 + i, kernelSize/2 + j] =
-                            (int) kernel[kernelSize/2 + i, kernelSize/2 + j];
-                        sum = sum + gaussianKernel[kernelSize/2 + i, kernelSize/2 + j];
-                    }
-                }
-            }
-            else
-            {
-                sum = 0;
-                for (var i = -kernelSize/2; i < kernelSize/2; i++)
-                {
-                    for (var j = -kernelSize/2; j < kernelSize/2; j++)
-                    {
-                        kernel[kernelSize/2 + i, kernelSize/2 + j] =
-                            (float) Math.Round(kernel[kernelSize/2 + i, kernelSize/2 + j], 0);
-                        gaussianKernel[kernelSize/2 + i, kernelSize/2 + j] =
-                            (int) kernel[kernelSize/2 + i, kernelSize/2 + j];
-                        sum = sum + gaussianKernel[kernelSize/2 + i, kernelSize/2 + j];
+                        kernel[i, j] = (float)Math.Round(kernel[i, j] * mult, 0);
+                        gaussianKernel[i, j] = (int)kernel[i, j];
+                        sum = sum + gaussianKernel[i, j];
                     }
                 }
             }
@@ -577,12 +552,12 @@ namespace CannyProject
             {
                 for (var j = limit; j <= (ObjInputImage.Height - limit) - 1; j++)
                 {
-                    if (PostHysteresis[i, j] >= _maxHysteresisThresh)
+                    if (PostHysteresis[i, j] >= _mainKoeefficient.MaxHysteresisThresh)
                     {
                         _edgePoints[i, j] = 1;
                         GNH[i, j] = 255;
                     }
-                    if ((PostHysteresis[i, j] < _maxHysteresisThresh) && (PostHysteresis[i, j] >= _minHysteresisThresh))
+                    if ((PostHysteresis[i, j] < _mainKoeefficient.MaxHysteresisThresh) && (PostHysteresis[i, j] >= _mainKoeefficient.MinHysteresisThresh))
                     {
                         _edgePoints[i, j] = 2;
                         GNL[i, j] = 255;
