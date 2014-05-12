@@ -281,9 +281,7 @@ namespace CannyProject
 
         private int[,] GetGaussianFilterImage(int[,] greyImage)
         {
-            int kernelWeight;
-            var gaussianKernel = GetGaussianKernel(_mainKoeefficient.KernelSize, _mainKoeefficient.Sigma,
-                                                   out kernelWeight);
+            var gaussianKernel = GetGaussianKernel(_mainKoeefficient.KernelSize, _mainKoeefficient.Sigma);
             int limit = _mainKoeefficient.KernelSize/2;
             int[,] output = greyImage;
 
@@ -296,24 +294,19 @@ namespace CannyProject
                     {
                         for (var l = -limit; l < limit; l++)
                         {
-                            sum = sum + ((float)greyImage[i + k, j + l] * gaussianKernel[limit + k, limit + l]);
+                            sum = sum + (greyImage[i + k, j + l] * gaussianKernel[limit + k, limit + l]);
                         }
                     }
-                    output[i, j] = (int) (Math.Round(sum/kernelWeight));
+                    output[i, j] = (int) (Math.Round(sum));
                 }
             }
             return output;
         }
 
-        private int[,] GetGaussianKernel(int kernelSize, float sigma, out int Weight)
+        private float[,] GetGaussianKernel(int kernelSize, float sigma)
         {
-            float pi;
-            pi = (float) Math.PI;
-
             var kernel = new float[kernelSize, kernelSize];
-            var gaussianKernel = new int[kernelSize, kernelSize];
-
-            float d1 = 2*pi*sigma*sigma;
+            float d1 = 2*(float) Math.PI*sigma*sigma;
             float d2 = 2*sigma*sigma;
             float min = 1000;
             var shift = kernelSize/2;
@@ -323,31 +316,14 @@ namespace CannyProject
                 {
                     var x = i - shift;
                     var y = j - shift;
-                    kernel[i, j] =((1/d1)*(float) Math.Exp(-(x*x + y*y)/d2));
+                    kernel[i, j] = ((1/d1)*(float) Math.Exp(-(x*x + y*y)/d2));
                     if (kernel[i, j] < min)
                     {
                         min = kernel[i, j];
                     }
                 }
             }
-            int mult = (int) (1/min);
-            int sum = 0;
-            if ((min > 0) && (min < 1))
-            {
-                for (var i = 0; i < kernelSize; i++)
-                {
-                    for (var j = 0; j < kernelSize; j++)
-                    {
-                        kernel[i, j] = (float)Math.Round(kernel[i, j] * mult, 0);
-                        gaussianKernel[i, j] = (int)kernel[i, j];
-                        sum = sum + gaussianKernel[i, j];
-                    }
-                }
-            }
-            //Normalizing kernel Weight
-            Weight = sum;
-
-            return gaussianKernel;
+            return kernel;
         }
 
         private float[,] GetDifferentiateX(int[,] gaussianFilterImage)
