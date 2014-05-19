@@ -17,7 +17,7 @@ namespace CannyProject
         public int[,] GaussianFilterImage;
         public float[,] Gradient;
         public float[,] NonMax;
-        public int[,] PostHysteresis;
+        //public int[,] PostHysteresis;
         private int[,] _edgePoints;
         public float[,] GNH;
         public float[,] GNL;
@@ -222,7 +222,7 @@ namespace CannyProject
 
         private int[,] DetectCannyEdges(int[,] greyImage)
         {
-            PostHysteresis = new int[ObjInputImage.Width,ObjInputImage.Height];
+            //PostHysteresis = new int[ObjInputImage.Width,ObjInputImage.Height];
             GaussianFilterImage = GetGaussianFilterImage(greyImage);
             float[,] derivativeX = GetDifferentiateX(GaussianFilterImage);
             float[,] derivativeY = GetDifferentiateY(GaussianFilterImage);
@@ -235,29 +235,29 @@ namespace CannyProject
             int limit = _mainKoeefficient.KernelSize / 2;
             SetNonMaxZero(limit, derivativeX, derivativeY);
 
-            SetPostHysretesisFromNonMax(limit);
+            //SetPostHysretesisFromNonMax(limit);
 
-            //Find Max and Min in Post Hysterisis
-            float min = 999;
-            float max = 0;
-            for (var r = limit; r <= (ObjInputImage.Width - limit) - 1; r++)
-            {
-                for (var c = limit; c <= (ObjInputImage.Height - limit) - 1; c++)
-                {
-                    if (PostHysteresis[r, c] > max)
-                    {
-                        max = PostHysteresis[r, c];
-                    }
+            ////Find Max and Min in Post Hysterisis
+            //float min = 999;
+            //float max = 0;
+            //for (var r = limit; r <= (ObjInputImage.Width - limit) - 1; r++)
+            //{
+            //    for (var c = limit; c <= (ObjInputImage.Height - limit) - 1; c++)
+            //    {
+            //        if (PostHysteresis[r, c] > max)
+            //        {
+            //            max = PostHysteresis[r, c];
+            //        }
 
-                    if ((PostHysteresis[r, c] < min) && (PostHysteresis[r, c] > 0))
-                    {
-                        min = PostHysteresis[r, c];
-                    }
-                }
-            } // nahuya? o_O
+            //        if ((PostHysteresis[r, c] < min) && (PostHysteresis[r, c] > 0))
+            //        {
+            //            min = PostHysteresis[r, c];
+            //        }
+            //    }
+            //} // nahuya? o_O
 
             SetGnhGnlEdgePoints(limit);
-            var edgeMap = HysterisisThresholding(_edgePoints);
+            var edgeMap = HysterisisThresholding();
             edgeMap = SetEdgeMap255(edgeMap);
             edgeMap = ClearEdgeMapHomeAlonePoint(edgeMap);
             return edgeMap;
@@ -360,8 +360,8 @@ namespace CannyProject
         {
             var filterWidth = filter.GetLength(0);
             var filterHeight = filter.GetLength(1);
-            var width = ObjInputImage.Width;
-            var height = ObjInputImage.Height;
+            var width = data.GetLength(0);
+            var height = data.GetLength(1);
             var output = new float[width, height];
 
             for (var i = filterWidth/2; i <= (width - filterWidth/2) - 1; i++)
@@ -506,17 +506,17 @@ namespace CannyProject
             }
         }
 
-        private void SetPostHysretesisFromNonMax(int limit)
-        {
-            //PostHysteresis = NonMax;
-            for (var r = limit; r <= (ObjInputImage.Width - limit) - 1; r++)
-            {
-                for (var c = limit; c <= (ObjInputImage.Height - limit) - 1; c++)
-                {
-                    PostHysteresis[r, c] = (int) NonMax[r, c];
-                }
-            }
-        }
+        //private void SetPostHysretesisFromNonMax(int limit)
+        //{
+        //    //PostHysteresis = NonMax;
+        //    for (var r = limit; r <= (ObjInputImage.Width - limit) - 1; r++)
+        //    {
+        //        for (var c = limit; c <= (ObjInputImage.Height - limit) - 1; c++)
+        //        {
+        //            PostHysteresis[r, c] = (int) NonMax[r, c];
+        //        }
+        //    }
+        //}
         
         private void SetGnhGnlEdgePoints(int limit)
         {
@@ -530,12 +530,12 @@ namespace CannyProject
             {
                 for (var j = limit; j <= (ObjInputImage.Height - limit) - 1; j++)
                 {
-                    if (PostHysteresis[i, j] >= max)
+                    if (NonMax[i, j] >= max)
                     {
                         _edgePoints[i, j] = 1;
                         GNH[i, j] = 255;
                     }
-                    if ((PostHysteresis[i, j] < max) && (PostHysteresis[i, j] >= min))
+                    if ((NonMax[i, j] < max) && (NonMax[i, j] >= min))
                     {
                         _edgePoints[i, j] = 2;
                         GNL[i, j] = 255;
@@ -544,7 +544,7 @@ namespace CannyProject
             }
         }
 
-        private int[,] HysterisisThresholding(int[,] edges)
+        private int[,] HysterisisThresholding()
         {
             int limit = _mainKoeefficient.KernelSize/2;
             var edgeMap = new int[ObjInputImage.Width, ObjInputImage.Height];
@@ -553,7 +553,7 @@ namespace CannyProject
             {
                 for (var j = limit; j <= (ObjInputImage.Height - 1) - limit; j++)
                 {
-                    if (edges[i, j] == 1)
+                    if (_edgePoints[i, j] == 1)
                     {
                         edgeMap[i, j] = 1;
                         Travers(edgeMap,i, j);
@@ -564,27 +564,12 @@ namespace CannyProject
             return edgeMap;
         }
 
-        private int[,] SetEdgeMap255(int[,] edgeMap)
-        {
-            for (var i = 0; i <= (ObjInputImage.Width - 1); i++)
-            {
-                for (var j = 0; j <= (ObjInputImage.Height - 1); j++)
-                {
-                    edgeMap[i, j] = edgeMap[i, j] * 255;
-                }
-            }
-            return edgeMap;
-        }
-
-
         private void Travers(int[,] edgeMap, int X, int Y)
         {
-
             if (VisitedMap[X, Y] == 1)
             {
                 return;
             }
-
             //1
             if (_edgePoints[X + 1, Y] == 2)
             {
@@ -601,9 +586,7 @@ namespace CannyProject
                 Travers(edgeMap, X + 1, Y - 1);
                 return;
             }
-
             //3
-
             if (_edgePoints[X, Y - 1] == 2)
             {
                 edgeMap[X, Y - 1] = 1;
@@ -611,9 +594,7 @@ namespace CannyProject
                 Travers(edgeMap, X, Y - 1);
                 return;
             }
-
             //4
-
             if (_edgePoints[X - 1, Y - 1] == 2)
             {
                 edgeMap[X - 1, Y - 1] = 1;
@@ -652,11 +633,7 @@ namespace CannyProject
                 edgeMap[X + 1, Y + 1] = 1;
                 VisitedMap[X + 1, Y + 1] = 1;
                 Travers(edgeMap, X + 1, Y + 1);
-                return;
             }
-
-            //VisitedMap[X, Y] = 1;
-            //return edgeMap;
         }
 
         private int[,] ClearEdgeMapHomeAlonePoint(int[,] edgeMap)
@@ -706,5 +683,19 @@ namespace CannyProject
             }
             return edgeMap;
         }
+
+        private int[,] SetEdgeMap255(int[,] edgeMap)
+        {
+            for (var i = 0; i <= (ObjInputImage.Width - 1); i++)
+            {
+                for (var j = 0; j <= (ObjInputImage.Height - 1); j++)
+                {
+                    edgeMap[i, j] = edgeMap[i, j] * 255;
+                }
+            }
+            return edgeMap;
+        }
+
+
     }
 }
