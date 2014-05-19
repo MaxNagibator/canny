@@ -322,6 +322,15 @@ namespace CannyProject
                     }
                 }
             }
+            //var text = "";
+            //for (var i = 0; i < kernelSize; i++)
+            //{
+            //    for (var j = 0; j < kernelSize; j++)
+            //    {
+            //        text += String.Format("{0,5} ", Math.Round(kernel[i, j], 3));
+            //    }
+            //    text += Environment.NewLine;
+            //} // раскоменти, если хочешь посмотреть ядро гаусса ;)
             return kernel;
         }
 
