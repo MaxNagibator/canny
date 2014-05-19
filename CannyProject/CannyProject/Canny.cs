@@ -328,9 +328,9 @@ namespace CannyProject
 
             float min = 1000;
 
-            for (var i = -kernelSize/2; i < kernelSize/2; i++)
+            for (var i = -kernelSize/2; i <= kernelSize/2; i++)
             {
-                for (var j = -kernelSize/2; j < kernelSize/2; j++)
+                for (var j = -kernelSize/2; j <= kernelSize/2; j++)
                 {
                     kernel[kernelSize/2 + i, kernelSize/2 + j] = ((1/d1)*(float) Math.Exp(-(i*i + j*j)/d2));
                     if (kernel[kernelSize/2 + i, kernelSize/2 + j] < min)
@@ -338,13 +338,23 @@ namespace CannyProject
 
                 }
             }
+
+            var text = "";
+            for (var i = -kernelSize / 2; i <= kernelSize / 2; i++)
+            {
+                for (var j = -kernelSize / 2; j <= kernelSize / 2; j++)
+                {
+                    text += String.Format("{0,4} ", Math.Round(kernel[kernelSize / 2 + i, kernelSize / 2 + j],2));
+                }
+                text += Environment.NewLine;
+            }
             int mult = (int) (1/min);
             int sum = 0;
             if ((min > 0) && (min < 1))
             {
-                for (var i = -kernelSize/2; i < kernelSize/2; i++)
+                for (var i = -kernelSize/2; i <= kernelSize/2; i++)
                 {
-                    for (var j = -kernelSize/2; j < kernelSize/2; j++)
+                    for (var j = -kernelSize/2; j <= kernelSize/2; j++)
                     {
                         kernel[kernelSize/2 + i, kernelSize/2 + j] =
                             (float) Math.Round(kernel[kernelSize/2 + i, kernelSize/2 + j]*mult, 0);
@@ -357,9 +367,9 @@ namespace CannyProject
             else
             {
                 sum = 0;
-                for (var i = -kernelSize/2; i < kernelSize/2; i++)
+                for (var i = -kernelSize/2; i <= kernelSize/2; i++)
                 {
-                    for (var j = -kernelSize/2; j < kernelSize/2; j++)
+                    for (var j = -kernelSize/2; j <= kernelSize/2; j++)
                     {
                         kernel[kernelSize/2 + i, kernelSize/2 + j] =
                             (float) Math.Round(kernel[kernelSize/2 + i, kernelSize/2 + j], 0);
@@ -371,7 +381,6 @@ namespace CannyProject
             }
             //Normalizing kernel Weight
             Weight = sum;
-
             return gaussianKernel;
         }
 
